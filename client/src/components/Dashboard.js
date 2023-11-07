@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
 import defaultProfilePic from '../images/user.png';
-import Footer from './Footer';
+// import Footer from './Footer';
 import { Button, Modal } from 'react-bootstrap';
 
 const Dashboard = () => {
@@ -45,7 +45,7 @@ const Dashboard = () => {
 
   return (
     <div style={pageStyle}>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container mt-5" style={heading}>
         <div className="row">
           <div className="col-md-6">
@@ -83,7 +83,7 @@ const Dashboard = () => {
         Add complaint
       </Button>
 
-      <Footer />
+      {/* <Footer /> */}
 
       <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>

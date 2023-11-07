@@ -42,6 +42,7 @@ const Footer = () => {
     width: '100%',
     // position: 'fixed',
     bottom: '0',
+    // overflow-x: hidden ,
   };
 
   const copyrightStyle = {

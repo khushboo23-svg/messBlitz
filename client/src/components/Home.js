@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './Navbar';
 import img1 from '../images/img1.png'; // import the image
 import img2 from '../images/img2.png'; // import the image
-import Footer from './Footer';
+// import Footer from './Footer';
 
 const Home = () => {
   const [feedbackText, setFeedbackText] = useState('');
@@ -40,10 +40,10 @@ const Home = () => {
 
   return (
     <div style={pageStyle}>
-      <Navbar />
+      {/* <Navbar /> */}
 
-      <div className="container-fluid mt-2">
-        <div className="row text-center justify-content-center mt-4">
+      <div className="container-fluid">
+        <div className="row text-center justify-content-center">
           <div className="col-md-6 mt-5 ">
             <p className='text-center'>
               <h1 style={{ fontFamily: '' }}>{feedbackText}</h1>
@@ -70,7 +70,7 @@ const Home = () => {
       <div className="container-fluid mt-5">
         <div className="row">
             <div className="col-md-12 p-0">
-                <Footer/>
+                {/* <Footer/> */}
             </div>
         </div>
       </div>
