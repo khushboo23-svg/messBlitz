@@ -4,81 +4,106 @@ import { Link } from "react-router-dom";
 // import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { register_student } from "../redux/studentSlice";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import useDispatch from "react-redux"
 
 
 function Register() {
 
-  const [values, setValues] = useState({
-    name: "",
-    regNo:"",
-    email: "",
-    hostelname:"",
-    roomNo:"",
-    password: "",
-    confirmpassword: "",
-  });
+  const [name, setName] = useState();
+  const [regNo, setRegNo] = useState();
+  const [hostelName, setHostelname] = useState();
+  const [email, setEmail] = useState();
+  const [roomNo, setRoomNo] = useState();
+  const [password, setPassword] = useState();
+  const [confirm, setConfirmPassowrd] = useState();
 
-  const toastOptions = {
-      position: "bottom-right",
-      autoClose: 8000,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark"
-  };
+  // const [values, setValues] = useState({
+  //   name: "",
+  //   regNo:"",
+  //   email: "",
+  //   hostelname:"",
+  //   roomNo:"",
+  //   password: "",
+  //   confirmpassword: "",
+  // });
+
+  // const toastOptions = {
+  //     position: "bottom-right",
+  //     autoClose: 8000,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     theme: "dark"
+  // };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // alert("form");
-    handleValidation();
+    // handleValidation();
+    axios.post('http://localhost:5500/registerStudent',{
+      name,
+      regNo,
+      hostelName,
+      email,
+      roomNo
+    }).then(res=>{
+      dispatch(register_student(res.data))
+    }).catch(err=> console.log(err))
   };
 
-  const handleValidation = () => {
-    const { password, confirmpassword,email, name } = values;
-    if (password != confirmpassword) {
-      // alert("wnetskjg");
-      toast.error("password and confirm passward should be same .",toastOptions);
-        return false;
-      // toast.error("password and confirm passward should be same .",{
-      //   position: "bottom-right",
-      //   autoClose: 8000,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   theme: "dark"
-      // });
-    }
+//   const handleValidation = () => {
+//     const { password, confirmpassword,email, name } = values;
+//     if (password != confirmpassword) {
+//       // alert("wnetskjg");
+//       toast.error("password and confirm passward should be same .",toastOptions);
+//         return false;
+//       // toast.error("password and confirm passward should be same .",{
+//       //   position: "bottom-right",
+//       //   autoClose: 8000,
+//       //   pauseOnHover: true,
+//       //   draggable: true,
+//       //   theme: "dark"
+//       // });
+//     }
 
-    else if(name.length < 3)
-    {
-      toast.error("name should be greater then 3 characters.",toastOptions);
-      return false;
-    }
-    else if(password.length < 8)
-    {
-      toast.error("password should be at least 8 character.",toastOptions);
-      return false;
-    } else if(email === "")
-    {
-      toast.error("email is required.",toastOptions);
-      return false;
-    }
-    return true;
-  };
+//     else if(name.length < 3)
+//     {
+//       toast.error("name should be greater then 3 characters.",toastOptions);
+//       return false;
+//     }
+//     else if(password.length < 8)
+//     {
+//       toast.error("password should be at least 8 character.",toastOptions);
+//       return false;
+//     } else if(email === "")
+//     {
+//       toast.error("email is required.",toastOptions);
+//       return false;
+//     }
+//     return true;
+//   };
 
 
-//   const [roomNo, setRoomNo] = useState('');
-  const handlechange = (event) => {
-    console.log(event.target.name, event.target.value);
-    setValues({ ...values, [event.target.name]: event.target.value });
-    // const value = event.target.value;
-    // if (!isNaN(value) && parseFloat(value) >= 0) {
-    //     setRoomNo(value);
-    //   }
-  };
+// //   const [roomNo, setRoomNo] = useState('');
+//   const handlechange = (event) => {
+//     console.log(event.target.name, event.target.value);
+//     setValues({ ...values, [event.target.name]: event.target.value });
+//     // const value = event.target.value;
+//     // if (!isNaN(value) && parseFloat(value) >= 0) {
+//     //     setRoomNo(value);
+//     //   }
+//   };
 
   return (
     <>
       <FormContainer >
-        <form onSubmit={(event) => handleSubmit(event)} >
+        <form onSubmit={(event) => handleSubmit} >
           <div className="brand">
             {/* <img src={Logo} alt="logo" /> */}
             <h3>STUDENT REGISTER</h3>
@@ -87,25 +112,31 @@ function Register() {
             type="text"
             placeholder="Name"
             name="name"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Name"
+            name="hostelName"
+            onChange={(e) => setName(e.target.value)}
           />
           <input 
             type="text"
             placeholder="Registation Number"
             name="regNo"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Email"
             name="email"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="text"
             placeholder="Hostel Name"
             name="hostelname"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           {/* <input
                 list="hostelnameList"
@@ -125,19 +156,19 @@ function Register() {
             type="Number"
             placeholder="Room Number"
             name="roomNo"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           <input
             type="password"
             placeholder="Confirm Password"
             name="confirmpassword"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
           <button type="">Create User</button>
           <span>
