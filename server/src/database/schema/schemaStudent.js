@@ -9,9 +9,9 @@ const studentSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    hostelId: {
-        type: mongoose.Types.ObjectId,
-        ref: 'hostelSchema'
+    hostelName: {
+        type: String,
+        required: true
     },
     email: {
         type: String,

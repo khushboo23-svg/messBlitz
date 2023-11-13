@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const hostelSchema = monggose.Schema({
+const hostelSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -11,7 +11,8 @@ const hostelSchema = monggose.Schema({
     },
     proofImg: {
         type: Buffer,
-        of: String
+        of: String,
+        required:false
     },
     upvoteId: {
         type: Array,
@@ -25,9 +26,9 @@ const hostelSchema = monggose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'studentSchema'
     },
-    hostelId: {
-        type: mongoose.Types.ObjectId,
-        ref:'hostelSchema'
+    hostelName: {
+        type: String,
+        required: true
     },
     comment: [{
         type: new mongoose.Schema({

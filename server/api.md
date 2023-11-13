@@ -83,7 +83,7 @@ result
 
 ### Student LOGIN API
 
-link: website/loginStudent
+link: website/loginStudent  
 required format:
 
 ```js
@@ -117,7 +117,7 @@ return
 
 ### Admin LOGIN API
 
-link: website/loginAdmin
+link: website/loginAdmin  
 required format:
 
 ```js
@@ -127,4 +127,67 @@ required format:
 }
 ```
 
+### Register Hostel
+
+link: website/registerHostel (admin: chief Warden only)
+required format:
+
+```js
+{
+    hostelName: required;
+}
+```
+
+eg.
+
+```js
+{
+    "hostelName": "PG Girls"
+}
+```
+
+output:
+
+```js
+{
+    "status": 400,
+    "data": {
+        "message": "Hostel created Sucessfully"
+    }
+}
+```
+
+### Register Warden
+
+link: (admin: chief Warden only)  
+Required format: 
+```js
+{
+    name:
+}
+```
+
 ## GET REQUESTS
+
+### Get All hostel Names
+
+link: website/getAllHostels
+output format:
+
+```js
+{
+    "status": 400,
+    "data": {
+        "hostels": [
+            {
+                "_id": "6551551bf518dbfd1be0320c",
+                "hostelName": "CV Raman"
+            },
+            {
+                "_id": "65515545f518dbfd1be03211",
+                "hostelName": "PG Girls"
+            }
+        ]
+    }
+}
+```
