@@ -33,7 +33,6 @@ const registerStudent = async (req,res)=>{
 
 
 const loginStudent = async (req,res)=>{
-    
     const {email, password} = req.body
     let existingUser = await StudentSchema.findOne({email: email})
     if(existingUser){
