@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const hostelSchema = mongoose.Schema({
+const complaintSchema = mongoose.Schema({
     title: {
         type: String,
         required: true

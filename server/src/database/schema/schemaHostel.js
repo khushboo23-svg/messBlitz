@@ -14,10 +14,10 @@ const hostelSchema = new mongoose.Schema({
         of: String,
         required: false
     },
-    wardens:[{
-        type: mongoose.Schema.ObjectId,
-        ref: 'admin'
-    }]
+    warden:{
+        type: String,
+        required: true
+    }
 
 },{timestamp: true})
 
