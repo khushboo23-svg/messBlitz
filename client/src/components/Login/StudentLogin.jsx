@@ -26,27 +26,33 @@ const StudentLogin = () => {
         const token = res.data.data.token;
         console.log("Token is : "+token);
         localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = window.localStorage.getItem('token');
-        axios.get('http://localhost:5500/getStudentData')
-        .then((response) => {
-          const studentData = response.data; 
-          console.log('Fetched student data:', studentData);
-
-          
-          dispatch(redirect_to_dashboard({
-            email: studentData.email,
-            name: studentData.name,
-            regNo: studentData.regNo,
-            token: token,
-          }));
-
-          navigate('/dashboard');
-        })
-        .catch((error) => {
-          console.error('Error fetching student data:', error);
-          // Handle the error as needed
-        });
+        axios.defaults.headers.common['Authorization'] = `${token}`;
         
+
+
+        // Fetch student data after successful login
+        axios.get('http://localhost:5500/student/dashboard')
+          .then((response) => {
+            console.log(response);
+            if(response.data.status===200){
+              const studentData = response.data.data;
+              dispatch(redirect_to_dashboard({
+                name : studentData.name,
+                email: studentData.email,
+                regNo: studentData.regNo,
+                hostelName: studentData.hostelName,
+                roomNo: studentData.roomNo,
+                token: studentData.token
+              }));
+              navigate('/dashboard')
+            }else toast.error('Cant log in!');
+            
+            
+          })
+          .catch((error) => {
+            console.error('Error fetching student data:', error);
+            toast.error('Error fetching student data');
+          });
       })
       .catch((err) => {
         if (
@@ -54,9 +60,9 @@ const StudentLogin = () => {
           err.response.data &&
           err.response.data.message === 'password mismatch'
         ) {
-          toast.error('Password mismatch. Please check your password and try again.');
+          toast.error('Password mismatch. Please check your credentials and try again.');
         } else {
-          toast.error('Login failed. Please try again later.');
+          toast.error('Login failed. Wrong credentials!');
         }
       });
   };

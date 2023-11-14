@@ -1,19 +1,30 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import {  useDispatch } from 'react-redux';
 import { logout } from '../redux/studentSlice';
+import axios from 'axios';
+
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state) => !!state.students.token);
+  // const isAuthenticated = useSelector((state) => !!state.students.token);
+  const location = useLocation();
 
   const handleLogout = () => {
     // Dispatch the logout action to reset user-related information
-    dispatch(logout());
-    // Redirect to the home page or login page
-    navigate('/');
+    axios.post('http://localhost:5500/logout')
+    .then((res)=>{
+      console.log(res);
+      dispatch(logout());
+      // Redirect to the home page or login page
+      navigate('/student');
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+    
   };
 
   return (
@@ -27,14 +38,13 @@ const Navbar = () => {
             </h2>
           </div>
           <div className="nav-links p-2 text-light">
-            {/* Check if the user is authenticated */}
-            {isAuthenticated ? (
-              // If authenticated, show Logout tab
+            {(location.pathname === '/dashboard') ? (
+              // If on the dashboard, show Logout tab
               <button className="text-light" style={logoutStyle} onClick={handleLogout}>
                 Logout
               </button>
             ) : (
-              // If not authenticated, show Home, Register, and Login tabs
+              // If not authenticated or not on the dashboard, show Home, Register, and Login tabs
               <>
                 <Link to="/" style={linkStyle}>
                   Home
@@ -42,12 +52,18 @@ const Navbar = () => {
                 <Link to="/register" style={linkStyle}>
                   Register
                 </Link>
-                <select style={selectStyle} onChange={(e) => window.location.href = e.target.value} className='text-center'>
-                  <option value="#login" disabled selected hidden>Login</option>
-                  <option className='text-light' style={optionStyle}>
+                <select
+                  style={selectStyle}
+                  onChange={(e) => (window.location.href = e.target.value)}
+                  className="text-center"
+                >
+                  <option value="#login" disabled selected hidden>
+                    Login
+                  </option>
+                  <option className="text-light" style={optionStyle}>
                     <Link to="/admin">Admin</Link>
                   </option>
-                  <option className='text-light' style={optionStyle}>
+                  <option className="text-light" style={optionStyle}>
                     <Link to="/student">Student</Link>
                   </option>
                 </select>
@@ -56,18 +72,17 @@ const Navbar = () => {
           </div>
         </nav>
       </div>
-      <div style={{ paddingTop: "80px" }}>{/*  */}</div>
+      <div style={{ paddingTop: '80px' }}>{/*  */}</div>
     </>
   );
 };
 
 const displayNavbar = {
-  position: "fixed",
+  position: 'fixed',
   top: 0,
-  width: "100%",
-  height: "80px",
-  boxShadow: "0px 4px 4px rgba(255, 255, 255, 0.3)",
-  backgroundColor: "#001F3F",
+  width: '100%',
+  height: '80px',
+  backgroundColor: '#001F3F',
   opacity: 1,
   zIndex: 1,
 };
