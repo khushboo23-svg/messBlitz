@@ -1,153 +1,164 @@
-import React, { useState, useEffect }from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-// import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import axios from 'axios';
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { register_student } from "../redux/studentSlice";
 
 function Register() {
+  const [name, setName] = useState('');
+  const [regNo, setRegNo] = useState('');
+  const [hostelOptions, setHostelOptions] = useState([]);
+  const [hostelName, setHostelName] = useState('');
+  const [email, setEmail] = useState('');
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [roomNo, setRoomNo] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [values, setValues] = useState({
-    name: "",
-    regNo:"",
-    email: "",
-    hostelname:"",
-    roomNo:"",
-    password: "",
-    confirmpassword: "",
-  });
+  
 
-  const toastOptions = {
-      position: "bottom-right",
-      autoClose: 8000,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark"
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Fetch hostel options from the API
+    axios.get('http://localhost:5500/getAllHostels')
+      .then(response => setHostelOptions(response.data.data.hostels))
+      .catch(error => {
+        console.error('Error fetching hostel options:', error);
+        toast.error("Error fetching hostel options");
+      });
+  }, []);
+
+  const handleHostelChange = (e) => {
+    setHostelName(e.target.value);
+  };
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasDigit = /\d/.test(password);
+
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasDigit
+    );
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // alert("form");
-    handleValidation();
-  };
 
-  const handleValidation = () => {
-    const { password, confirmpassword,email, name } = values;
-    if (password != confirmpassword) {
-      // alert("wnetskjg");
-      toast.error("password and confirm passward should be same .",toastOptions);
-        return false;
-      // toast.error("password and confirm passward should be same .",{
-      //   position: "bottom-right",
-      //   autoClose: 8000,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   theme: "dark"
-      // });
+    if (!validatePassword(password)) {
+      toast.error(
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit."
+      );
+      return;
     }
 
-    else if(name.length < 3)
-    {
-      toast.error("name should be greater then 3 characters.",toastOptions);
-      return false;
-    }
-    else if(password.length < 8)
-    {
-      toast.error("password should be at least 8 character.",toastOptions);
-      return false;
-    } else if(email === "")
-    {
-      toast.error("email is required.",toastOptions);
-      return false;
-    }
-    return true;
-  };
-
-
-//   const [roomNo, setRoomNo] = useState('');
-  const handlechange = (event) => {
-    console.log(event.target.name, event.target.value);
-    setValues({ ...values, [event.target.name]: event.target.value });
-    // const value = event.target.value;
-    // if (!isNaN(value) && parseFloat(value) >= 0) {
-    //     setRoomNo(value);
-    //   }
+    axios.post('http://localhost:5500/registerStudent', {
+      name,
+      regNo,
+      hostelName,
+      email,
+      password,
+      recoveryEmail,
+      roomNo
+    })
+      .then(res => {
+        if (res.data.status === 200 && res.data.data) {
+          if (password === confirmPassword) {
+            
+            dispatch(register_student(res.data));
+            navigate('/student')
+            toast.success("Registration Successful!");
+          } else {
+            toast.error("Password Not matching!");
+          }
+        } else {
+          toast.error("Registration Unsuccessful! Please check your credentials.")
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error("Error registering user");
+      });
   };
 
   return (
     <>
-      <FormContainer >
-        <form onSubmit={(event) => handleSubmit(event)} >
+      <FormContainer>
+        <form onSubmit={handleSubmit}>
           <div className="brand">
-            {/* <img src={Logo} alt="logo" /> */}
             <h3>STUDENT REGISTER</h3>
           </div>
           <input
             type="text"
             placeholder="Name"
             name="name"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setName(e.target.value)}
           />
-          <input 
+          <input
             type="text"
-            placeholder="Registation Number"
+            placeholder="Registration Number"
             name="regNo"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setRegNo(e.target.value)}
+          />
+          {/* Dropdown for Hostel Name */}
+          <select
+            value={hostelName}
+            onChange={handleHostelChange}
+          >
+            <option value="" disabled>Select Hostel</option>
+            {hostelOptions.map(hostel => (
+              <option key={hostel._id} value={hostel.hostelName}>
+                {hostel.hostelName}
+              </option>
+            ))}
+          </select>
+          
+          <input
+            type="email"
+            placeholder="G-Suit Id"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="email"
-            placeholder="Email"
-            name="email"
-            onChange={(e) => handlechange(e)}
+            placeholder="Recovery Email"
+            name="recovery_email"
+            onChange={(e) => setRecoveryEmail(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Hostel Name"
-            name="hostelname"
-            onChange={(e) => handlechange(e)}
-          />
-          {/* <input
-                list="hostelnameList"
-                type="text"
-                placeholder="hostelname name"
-                name="hostelname"
-                // value={hostelname}
-                onChange={handlechange}
-          />
-            <datalist id="hostelnameList">
-                <option value="hostelname A" />
-                <option value="hostelname B" />
-                <option value="hostelname C" />
-                {/* Add more options as needed */}
-            {/* </datalist> */}
           <input
             type="Number"
             placeholder="Room Number"
             name="roomNo"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setRoomNo(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <input
             type="password"
             placeholder="Confirm Password"
             name="confirmpassword"
-            onChange={(e) => handlechange(e)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <button type="">Create User</button>
+          <button type="submit">Create User</button>
           <span>
-            Don't have an account? <Link to="/Student">Login</Link>
+            Already have an account? <Link to="/Student">Login</Link>
           </span>
         </form>
-        <div>
-        </div>
-      </FormContainer>  
-      
+      </FormContainer>
       <ToastContainer />
     </>
   );
@@ -158,7 +169,6 @@ const FormContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-//   justify-content: center;
   gap: 1rem;
   align-items: center;
   background-color: #001F3F;
@@ -168,14 +178,14 @@ const FormContainer = styled.div`
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    h3{
+    h3 {
       color: yellow;
       text-transform: uppercase;
     }
   }
-  form{
+  form {
     width: 45%;
-    height:100%;
+    height: 100%;
     margin-top: 4rem;
     margin-bottom: 4rem;
     display: flex;
@@ -185,7 +195,8 @@ const FormContainer = styled.div`
     border-radius: 2rem;
     padding: 2rem 7rem;
     padding-bottom: 5rem;
-    input{
+    input,
+    select {
       background-color: transparent;
       padding: 1rem;
       border: 0.1rem solid yellow;
@@ -196,8 +207,7 @@ const FormContainer = styled.div`
       &:focus {
         border: 0.1rem solid blue;
         outline: none;
-      }      
-      
+      }
     }
     button {
       background-color: #997af0;
@@ -218,7 +228,7 @@ const FormContainer = styled.div`
       color: white;
       font-size: 100%;
       text-transform: uppercase;
-      a{
+      a {
         color: #4e0eff;
         text-decoration: none;
         font-weight: bold;

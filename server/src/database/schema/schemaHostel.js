@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
-const hostelSchema = new monggose.Schema({
-    name: {
+const hostelSchema = new mongoose.Schema({
+    hostelName: {
         type: String,
         required: true
     },
@@ -11,12 +11,13 @@ const hostelSchema = new monggose.Schema({
     },
     messMenu: {
         type: Buffer,
-        of: String
+        of: String,
+        required: false
     },
-    wardens:[{
-        type: mongoose.Schema.ObjectId,
-        ref: 'admin'
-    }]
+    warden:{
+        type: String,
+        required: true
+    }
 
 },{timestamp: true})
 

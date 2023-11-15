@@ -1,17 +1,13 @@
 const mongoose = require("mongoose")
 
-const studentSchema = mongoose.Schema({
+const wardenSchema = new mongoose.Schema({
     name: {
-        type: String,
-        required: true
-    },
-    regNo: {
         type: String,
         required: true
     },
     hostelName: {
         type: String,
-        required: true
+        required: false
     },
     email: {
         type: String,
@@ -21,21 +17,21 @@ const studentSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    recoveryEmail: {
-        type: String,
-        required: true
-    },
-    roomNo: {
-        type: Number,
-        required: false
+    appointedBy: {
+        type: mongoose.Types.ObjectId,
+        ref: 'schemaChiefWarden'
     },
     profileImg: {
         type: Buffer,
         of: String,
         required: false
+    },
+    recoveryEmail: {
+        type: String,
+        required: true
     }
 }, {timestamp: true})
 
-const StudentSchema = mongoose.model('studentSchema', studentSchema)
+const WardenSchema = mongoose.model('wardenSchema',wardenSchema);
 
-module.exports = StudentSchema
+module.exports = WardenSchema
