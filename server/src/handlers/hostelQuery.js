@@ -7,6 +7,6 @@ const getAllHostels = async function(req,res,next){
         hostels: hostels
     }})
 }
-
+ 
 module.exports = {getAllHostels}
 
