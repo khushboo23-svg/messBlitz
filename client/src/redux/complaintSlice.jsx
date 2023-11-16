@@ -12,10 +12,10 @@ const complaintSlice = createSlice({
             state.complaints.push(action.payload);
         },
         get_my_complaints: (state,action) => {
-
+            state.myComplaints = action.payload
         },
         get_all_complaints: (state,action) => {
-
+            state.complaints = action.payload
         }
     }
 });

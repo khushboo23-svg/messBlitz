@@ -6,7 +6,7 @@ import defaultProfilePic from '../images/user.png';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import {useDispatch} from 'react-redux'
-import { add_complaint } from '../redux/complaintSlice';
+import { add_complaint,get_all_complaints,get_my_complaints } from '../redux/complaintSlice';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -18,13 +18,19 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const studentData = useSelector((state) => state.students);
+  const [showMyComplaints, setShowMyComplaints] = useState(true);
+  const myComplaints = useSelector((state) => state.complaints.myComplaints);
+  const allComplaints = useSelector((state) => state.complaints.complaints);
+  console.log(allComplaints.complaints);
+  console.log(myComplaints.myComplaints);
 
 
-  const [complaintlist,setComplaintlist] = useState(true);
 
-  const openList =()=> {
-    setComplaintlist(!complaintlist);
-  }
+  // const [complaintlist,setComplaintlist] = useState(true);
+
+  // const openList =()=> {
+  //   setComplaintlist(!complaintlist);
+  // }
 
 
   const [title,settitle] = useState('');
@@ -32,9 +38,10 @@ const Dashboard = () => {
   const [proofImage,setProofImage] = useState();
   const studentName = studentData.name;
 
+
   const dispatch = useDispatch();
 
-  // console.log(studentData);
+  console.log(studentData);
 
   const handleComplaint = (e)=> {
     e.preventDefault();
@@ -119,8 +126,8 @@ const Dashboard = () => {
       <div className="container">
         <div className="row justify-content-left">
             <div className="col-md-6 p-2 m-2">
-                <button className='btn btn-primary m-1' onClick={openList}>All Complaints</button>
-                <button className='btn btn-primary m-1' onClick={openList}>My Complaints</button>
+                <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(false)}>All Complaints</button>
+                <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(true)}>My Complaints</button>
                 <button className='btn btn-primary m-1' onClick={openMenu}>View Mess Menu</button>
                 <button className="btn btn-primary m-1" style={{ bottom: '180px', right: '20px' }} onClick={openModal}>
                 Add complaint
@@ -129,29 +136,26 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="container mt-5 mb-5">
-        <div className="row">
-        <h2>My Complaints</h2>
-        
-          <div className="col-md-6">
-              <Complaintcard/>
-          </div>
-          <div className="col-md-6">
-              <Complaintcard/>
-          </div>
-        </div>
-      </div>
-      <div className="container mt-5 mb-5">
-        <div className="row">
-        
-        <h2>All Complaints</h2>
-          <div className="col-md-6">
-              <Complaintcard/>
-          </div>
-        </div>
-      </div>
       
-
+      
+      
+      <div className="container mt-5 mb-5">
+  <div className="row">
+    <h2>{showMyComplaints ? 'My Complaints' : 'All Complaints'}</h2>
+    {showMyComplaints
+      ? myComplaints.myComplaints.map((complaint, index) => (
+          <div key={index} className="col-md-6">
+            <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
+          </div>
+        ))
+      : allComplaints.complaints.map((complaint, index) => (
+          <div key={index} className="col-md-6">
+            <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
+          </div>
+        ))}
+        
+  </div>
+</div>
       
       
 
