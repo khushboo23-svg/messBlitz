@@ -152,10 +152,20 @@ import { add_complaint } from '../redux/complaintSlice';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
+import Complaintcard from './Complaintcard';
+
+
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const studentData = useSelector((state) => state.students);
+
+
+  const [complaintlist,setComplaintlist] = useState(true);
+
+  const openList =()=> {
+    setComplaintlist(!complaintlist);
+  }
 
 
   const [title,settitle] = useState('');
@@ -250,8 +260,8 @@ const Dashboard = () => {
       <div className="container">
         <div className="row justify-content-left">
             <div className="col-md-6 p-2 m-2">
-                <button className='btn btn-primary m-1'>My Complaints</button>
                 <button className='btn btn-primary m-1'>All Complaints</button>
+                <button className='btn btn-primary m-1' onClick={openList}>My Complaints</button>
                 <button className='btn btn-primary m-1' onClick={openMenu}>View Mess Menu</button>
                 <button className="btn btn-primary m-1" style={{ bottom: '180px', right: '20px' }} onClick={openModal}>
                 Add complaint
@@ -260,7 +270,13 @@ const Dashboard = () => {
             </div>
         </div>
       </div>
-
+      { complaintlist && (
+        <div className="container mt-5 mb-5">
+          <Complaintcard/>
+          <Complaintcard/>
+          <Complaintcard/>
+        </div>
+        )}
       
       
 
