@@ -30,12 +30,12 @@ function Complaintcard() {
       <div className="card container">
         <div className="card-body ">
           <div className="title-date-vote-user">
-            <h1 className="card-title">Card title</h1>
+            <h3 className="card-title">Card title</h3>
             <p>37/44/3321</p>
           </div>
           <hr />
           <div className="description  ">
-            <p className="card-text fs-5 fw-light">
+            <p className="card-text fs-6 fw-light">
               Some quick example text to build on the card title and make up the
               bulk of the card's content.
             </p>
@@ -75,7 +75,7 @@ function Complaintcard() {
             </h2>
           </div>
           <div className="col-5 offset-4">
-            <h2>made by ABCDEFG HIKLMN</h2>
+            <h5>made by ABCDEFG HIKLMN</h5>
           </div>
         </div>
         {/* <hr /> */}
@@ -83,7 +83,7 @@ function Complaintcard() {
           {buttonVisible && (
             <Button
               variant="link"
-              className="text-decoration-none text-lowercase fs-4"
+              className="text-decoration-none text-lowercase fs-6"
               onClick={openComment}
             >
               View all comments
@@ -94,15 +94,15 @@ function Complaintcard() {
           <div className="mb-3">
             <Button onClick={openComment}>close</Button>
             <hr />
-            <h1>comment 1</h1>
+            <p className="text-light">comment 1</p>
             <hr />
-            <h1>comment 1</h1>
+            <p className="text-light">comment 1</p>
             <hr />
-            <h1>comment 1</h1>
+            <p className="text-light">comment 1</p>
             <hr />
-            <h1>comment 1</h1>
+            <p className="text-light">comment 1</p>
             <hr />
-            <h1>comment 1</h1>
+            <p className="text-light">comment 1</p>
             <hr />
           </div>
         )}

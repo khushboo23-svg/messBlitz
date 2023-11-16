@@ -24,7 +24,7 @@ const StudentLogin = () => {
     })
       .then((res) => {
         const token = res.data.data.token;
-        console.log("Token is : "+token);
+        // console.log("Token is : "+token);
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `${token}`;
         
@@ -33,7 +33,8 @@ const StudentLogin = () => {
         // Fetch student data after successful login
         axios.get('http://localhost:5500/student/dashboard')
           .then((response) => {
-            console.log(response);
+            console.log(response.data.data);
+            console.log(response.data);
             if(response.data.status===200){
               const studentData = response.data.data;
               dispatch(redirect_to_dashboard({
@@ -42,7 +43,7 @@ const StudentLogin = () => {
                 regNo: studentData.regNo,
                 hostelName: studentData.hostelName,
                 roomNo: studentData.roomNo,
-                token: studentData.token
+                token: studentData.token 
               }));
               navigate('/dashboard')
             }else toast.error('Cant log in!');

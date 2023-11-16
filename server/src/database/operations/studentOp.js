@@ -63,7 +63,8 @@ const getStudentbyId = async function(_id){
             email: student.email,
             regNo: student.regNo,
             hostelName: student.hostelName,
-            profileImg: student.profileImg
+            profileImg: student.profileImg,
+            roomNo: student.roomNo
         };
     }
     else{

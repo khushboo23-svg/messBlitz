@@ -10,7 +10,7 @@ const studentDashboard = async function(req,res,next){
         let student = await getStudentbyId(_id);
         if(student){
             res.send({
-                status:400,
+                status:200,
                 data: {
                     ...student,
                     complaints: await getComplaintsByHostelName(student.hostelName),
