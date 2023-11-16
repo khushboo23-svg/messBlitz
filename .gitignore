@@ -7,3 +7,7 @@ config.env
 server/package.json
 
 server/package-lock.json
+
+client/package.json
+
+client/package-lock.json

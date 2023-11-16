@@ -17,9 +17,9 @@ const createHostel = async function(data){
     })
     let response;
     await hostel.save().then(()=>{
-        response = {status:400, data:{message:"Hostel created Sucessfully"}}
+        response = {status:200, data:{message:"Hostel created Sucessfully"}}
     }).catch((err)=>{
-        response = {status:200,message:"The following error arose "+err}
+        response = {status:400,message:"The following error arose "+err}
     })
     return response;
 }

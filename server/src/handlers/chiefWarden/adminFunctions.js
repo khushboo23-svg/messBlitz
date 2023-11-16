@@ -5,7 +5,7 @@ const { isValidHostelName, createHostel } = require('../../database/operations/h
 const registerWarden = async (req,res)=>{
     const {name, email, recoveryEmail} = req.body
     if((await isValidWardenRecoveryEmail(recoveryEmail))||(await isValidWardenEmail(email))){
-        res.send({status:400, message: "Unique fields already exist"});
+        res.send({status:200, message: "Unique fields already exist"});
     }
     else{
         res.send(await createWarden({name,email,recoveryEmail,appointedBy: req.body.cWid}));

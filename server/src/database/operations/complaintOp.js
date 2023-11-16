@@ -13,6 +13,10 @@ const getComplaintsByHostelName = async function(hostelName){
     return ComplaintSchema.find({hostelName: hostelName});
 }
 
+const getComplaintById = async function(_id){
+    return ComplaintSchema.findById(_id);
+}
+
 const createComplaint = async function(data){
     const complaint = new ComplaintSchema({
         title: data.title,
@@ -27,12 +31,12 @@ const createComplaint = async function(data){
     // console.log(complaint)
     let response;
     await complaint.save().then((doc)=>{
-        // console.log(doc)
-        response =  {status:400, data:{...doc}}
+        console.log(doc)
+        response =  {status:200, data:doc}
     }).catch((err)=>{
-        response =  {status:200, message: "error raised: "+err}
+        response =  {status:400, message: "error raised: "+err}
     });
     return response;
 }
 
-module.exports = {getAllComplaints, getComplaintsByHostelName, getComplaintsByStudentId, createComplaint}
+module.exports = {getAllComplaints, getComplaintsByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById}

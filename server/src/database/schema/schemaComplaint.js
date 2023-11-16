@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const complaintSchema = mongoose.Schema({
+const complaintSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -24,7 +24,8 @@ const complaintSchema = mongoose.Schema({
     },
     studentId: {
         type: mongoose.Types.ObjectId,
-        ref: 'studentSchema'
+        ref: 'studentSchema',
+        required: true
     },
     hostelName: {
         type: String,

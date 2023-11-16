@@ -24,9 +24,8 @@ const loginStudent = async (req,res)=>{
         const token = jwt.sign({_id: student._id}, process.env.SECRET_KEY,{
             expiresIn: '7d'
         })
-        console.log(token)
         res.send({status:200,
-            data: {status: 200,
+            data: {
                 message: "student successfully logged in",
                 token: token
             }})

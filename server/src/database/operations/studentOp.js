@@ -1,8 +1,16 @@
 const StudentSchema = require('../schema/schemaStudent')
 
 const isValidStudentEmail = async function(email){
-    const existingUser = await StudentSchema.findOne({email: email});
-    if(existingUser)
+    const existingStudent = await StudentSchema.findOne({email: email});
+    if(existingStudent)
+        return true
+    else
+        return false
+}
+
+const isValidStudentId = async function(_id){
+    const existingStudent = await StudentSchema.findById(_id);
+    if(existingStudent)
         return true
     else
         return false
@@ -34,7 +42,7 @@ const createStudent = async function(data){
         hostelName: data.hostelName,
         roomNo: data.roomNo
     })
-    let response={text: "dummy"};
+    let response;
     await student.save().then(()=>{
         response = {status: 200, data: {message: "Successfully registered the Student"}};
     }).catch((err)=>{
@@ -78,4 +86,4 @@ const getStudentbyId = async function(_id){
 
 // const getStudentby
 
-module.exports = {isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId}
+module.exports = {isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId, isValidStudentId}
