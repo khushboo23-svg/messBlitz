@@ -6,6 +6,7 @@ const { getAllHostels } = require('../handlers/hostelQuery');
 const { studentDashboard, addComplaint } = require('../handlers/student/dashboard');
 const { authCW } = require('../auth/authChiefWarden');
 const { loginChiefWarden, registerChiefWarden } = require('../handlers/chiefWarden/loginSignup');
+const authS = require('../auth/authStudent');
 
 
 rootRoute.post('/registerStudent', registerStudent);
@@ -26,8 +27,8 @@ rootRoute.post('/chiefWarden/registerHostel', authCW, registerHostel)
 
 rootRoute.get('/getAllHostels', getAllHostels);
 
-rootRoute.get('/student/dashboard',studentDashboard);
+rootRoute.get('/student/dashboard', authS, studentDashboard);
 
-rootRoute.post('/student/addComplaint',addComplaint);
+rootRoute.post('/student/addComplaint', authS, addComplaint);
 
 module.exports = rootRoute
