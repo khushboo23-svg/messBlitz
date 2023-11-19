@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import AdminLogin from './components/Login/AdminLogin';
 import StudentLogin from './components/Login/StudentLogin';
 import Register from './components/Register';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admindashboard" element={<AdminDashboard/>} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/student" element={<StudentLogin />} />
             <Route path="/register" element={<Register />} />
