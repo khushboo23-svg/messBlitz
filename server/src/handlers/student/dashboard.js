@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken")
-const { getComplaintsByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById } = require("../../database/operations/complaintOp");
+const { getComplaintsByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById, deleteComplaintbyId } = require("../../database/operations/complaintOp");
 const { getStudentbyId } = require("../../database/operations/studentOp");
-const ComplaintSchema = require("../../database/schema/schemaComplaint");
-const StudentSchema = require("../../database/schema/schemaStudent");
 
 const studentDashboard = async function(req,res,next){
     let student = await getStudentbyId(req.sid);
@@ -31,27 +29,53 @@ const addComplaint = async function(req,res){
         res.send({status:400, message: "student doesnt exist"});
 }
 
-// const deleteComplaint = async function(req, res){
-//     let student = getStudentbyId(req.sid);
-//     let _id = req.params.id;
-//     if(student){
-//         let complaint = getComplaintById(_id);
-//         if(complaint){
-//             if(complaint.studentId==student._id){
-//                 res.send
-//             }
-//         }
-//         else{
-//             res.send({status: 400, data: "student doesnt seem to exist"})
-//         }
-//     }
-//     else{
-//         res.send({status: 400, data: "student doesnt seem to exist"})
-//     }
-// }
+const getComplaint = async function(req, res){
+    let id = req.params.id;
+    let complaint = getComplaintById(id);
+    let student = getStudentbyId(req.sid);
+    if(complaint){
+        if(complaint.hostelName==student.hostelName){
+            res.send({status: 200, data: complaint})
+        }
+        res.send({status: 400, message: "Student is not authorized to see other hostel's complaints"})
+    }
+    else{
+        res.send({status: 400, message: "Complaint doesnt exist"})
+    }
+}
 
-// const addComment = async function(req, res){
-//     const {id, }
-// }
+const deleteComplaint = async function(req, res){
+    let id = req.params.id;
+    let complaint = getComplaintById(id);
+    if(complaint){
+        if(complaint.studentId==req.sid){
+            res.send(await deleteComplaintbyId(id));
+        }
+        else{
+            res.send({status: 400, data: "complaint is not raised by the user"})
+        }
+    }
+    else{
+        res.send({status: 400, data: "student doesnt seem to exist"})
+    }
+}
+
+const addComment = async function(req, res){
+    const {comment, complaintId} = req.body;
+    if(isValidComplaintId(complaintId)){
+        res.send(await addCommentInComplaint({comment, complaintId, writtenBy: req.sid}));
+    }
+    else{
+        res.send({status: 400, message: "complaint doesnt exist"});
+    }
+}
+
+const deleteComment = async function(req, res){
+    const {commentId, complaintId} = req.body;
+    const comment = await getCommentById({complaintId, commentId});
+    if(comment.writtenBy==req.sid){
+        res.send(await deleteComplaintbyId({complaintId, commentId}));
+    }
+}
 
 module.exports = {studentDashboard, addComplaint}

@@ -10,16 +10,14 @@ const hostelSchema = new mongoose.Schema({
         required: true
     },
     messMenu: {
-        type: Buffer,
-        of: String,
-        required: false
+        required: String
     },
     warden:{
         type: String,
         required: true
     }
 
-},{timestamp: true})
+},{timestamps: true})
 
 const HostelSchema = mongoose.model('hostelSchema',hostelSchema)
 
