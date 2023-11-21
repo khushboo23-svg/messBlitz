@@ -1,33 +1,3 @@
-// // store.js
-
-// import { configureStore } from '@reduxjs/toolkit';
-// import { persistStore, persistReducer } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-
-// import studentReducer from './studentSlice';
-
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
-
-// const persistedReducer = persistReducer(persistConfig, studentReducer);
-
-// const store = configureStore({
-//   reducer: {
-//     students: persistedReducer,
-//     complaints: persistReducer,
-//   },
-// });
-
-// const persistor = persistStore(store);
-
-// export { store, persistor };
-
-
-
-// store.js
-
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web

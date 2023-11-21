@@ -1,69 +1,81 @@
-//adding the complaint feature
-import React, { useState } from 'react';
-// import Navbar from './Navbar';
+import React, { useEffect, useState } from 'react';
 import defaultProfilePic from '../images/user.png';
-// import Footer from './Footer';
 import { Button, Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import {useDispatch} from 'react-redux'
-import { add_complaint,get_all_complaints,get_my_complaints } from '../redux/complaintSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { add_complaint, get_all_complaints, get_my_complaints } from '../redux/complaintSlice';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 
 import Complaintcard from './Complaintcard';
-
-
+// import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const studentData = useSelector((state) => state.students);
   const [showMyComplaints, setShowMyComplaints] = useState(true);
+
   const myComplaints = useSelector((state) => state.complaints.myComplaints);
   const allComplaints = useSelector((state) => state.complaints.complaints);
-  console.log(allComplaints.complaints);
-  console.log(myComplaints.myComplaints);
-
-
-
-  // const [complaintlist,setComplaintlist] = useState(true);
-
-  // const openList =()=> {
-  //   setComplaintlist(!complaintlist);
-  // }
-
-
-  const [title,settitle] = useState('');
-  const [description,setDescription] = useState('');
-  const [proofImage,setProofImage] = useState();
-  const studentName = studentData.name;
-
 
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
-  console.log(studentData);
+  const [title, settitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [proofImage, setProofImage] = useState();
+  const studentName = studentData.name;
 
-  const handleComplaint = (e)=> {
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+
+  const openMenu = () => setShowMenu(true);
+  const closeMenu = () => setShowMenu(false);
+
+  useEffect(() => {
+    fetchComplaintData();
+    const intervalId = setInterval(fetchComplaintData, 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  const fetchComplaintData = () => {
+    axios.get('http://localhost:5500/student/dashboard')
+    .then((response) => {
+      if(response.data.status===200){
+        const studentData = response.data.data;
+        console.log(studentData.complaints);
+        console.log(studentData.myComplaints);
+        dispatch(get_all_complaints({
+          complaints : studentData.complaints
+        }))
+        dispatch(get_my_complaints({
+          myComplaints : studentData.myComplaints
+        }))
+      }else toast.error('Cant log in!');
+    })
+    .catch((error) => {
+      console.error('Error fetching student data:', error);
+      toast.error('Error fetching student data');
+    })
+  };
+
+  const handleComplaint = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5500/student/addComplaint',{
+    axios.post('http://localhost:5500/student/addComplaint', {
       title,
       description,
       proofImage,
       studentName,
-      
-    }).then((res)=>{
+    }).then((res) => {
       console.log(res);
-      // toast.success('complaint added successfully')
       dispatch(add_complaint(res.data));
-      
-      // console.log(res);
-    })
-    .catch((err)=>{
+      toast.success("success")
+    }).catch((err) => {
       console.log(err);
     })
-    
   }
-
 
   const pageStyle = {
     display: 'flex',
@@ -87,12 +99,6 @@ const Dashboard = () => {
     objectFit: 'cover',
   };
 
-  const openModal = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
-
-  const openMenu = () => setShowMenu(true);
-  const closeMenu = () => setShowMenu(false);
-
   const inputStyle = {
     border: 'none',
     borderBottom: '2px solid #001F3F',
@@ -106,12 +112,11 @@ const Dashboard = () => {
 
   return (
     <div style={pageStyle}>
-      {/* <Navbar /> */}
+    
       <div className="container mt-5" style={heading}>
         <div className="row">
           <div className="col-md-6">
-            <span style={{ fontSize: '30px' }}>Hostel Name : {studentData.hostelName} <p style={{fontSize: '20px'}}>Room No: {studentData.roomNo}</p></span> 
-            
+            <span style={{ fontSize: '30px' }}>Hostel Name : {studentData.hostelName} <p style={{ fontSize: '20px' }}>Room No: {studentData.roomNo}</p></span>
           </div>
           <div className="col-md-5" align="right">
             <p>Registration Number: {studentData.regNo}</p>
@@ -125,45 +130,49 @@ const Dashboard = () => {
 
       <div className="container">
         <div className="row justify-content-left">
-            <div className="col-md-6 p-2 m-2">
-                <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(false)}>All Complaints</button>
-                <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(true)}>My Complaints</button>
-                <button className='btn btn-primary m-1' onClick={openMenu}>View Mess Menu</button>
-                <button className="btn btn-primary m-1" style={{ bottom: '180px', right: '20px' }} onClick={openModal}>
-                Add complaint
-                </button>
-            </div>
+          <div className="col-md-6 p-2 m-2">
+            <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(false)}>All Complaints</button>
+            <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(true)}>My Complaints</button>
+            <button className='btn btn-primary m-1' onClick={openMenu}>View Mess Menu</button>
+            <button className="btn btn-primary m-1" style={{ bottom: '180px', right: '20px' }} onClick={openModal}>
+              Add complaint
+            </button>
+          </div>
         </div>
       </div>
 
       
-      
-      
-      <div className="container mt-5 mb-5">
+<div className="container mt-5 mb-5">
   <div className="row">
-    <h2>{showMyComplaints ? 'My Complaints' : 'All Complaints'}</h2>
+    <h2 className='text-center' style={{color : 'skyblue'}}>{showMyComplaints ? 'My Complaints' : 'All Complaints'}</h2>
+    
     {showMyComplaints
-      ? myComplaints.myComplaints.map((complaint, index) => (
-          <div key={index} className="col-md-6">
-            <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
-          </div>
+      ? (myComplaints.myComplaints && myComplaints.myComplaints.length > 0 ? (
+          myComplaints.myComplaints.map((complaint, index) => (
+            <div key={index} className="col-md-6">
+              <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
+            </div>
+          ))
+        ) : (
+          <p className='text-warning text-center'>You have made no complaints yet</p>
         ))
-      : allComplaints.complaints.map((complaint, index) => (
-          <div key={index} className="col-md-6">
-            <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
-          </div>
+      : (allComplaints.complaints && allComplaints.complaints.length > 0 ? (
+          allComplaints.complaints.map((complaint, index) => (
+            <div key={index} className="col-md-6">
+              <Complaintcard complaint={complaint} showMyComplaints={showMyComplaints} />
+            </div>
+          ))
+        ) : (
+          <p className='text-warning text-center'>No complaints available</p>
+          
         ))}
-        
+    
   </div>
 </div>
-      
-      
+
+
 
       <div className="flex-grow-1"></div>
-
-      
-
-      {/* <Footer /> */}
 
       <Modal show={showModal} onHide={closeModal}>
         <form onSubmit={handleComplaint}>
@@ -175,16 +184,14 @@ const Dashboard = () => {
             <textarea type="text" placeholder="Description" style={inputStyle} required onChange={(e) => setDescription(e.target.value)} />
             <label htmlFor="">Upload image if any</label> <br /> <br />
             <input type="file" accept="image/*" onChange={(e) => setProofImage(e.target.files[0])} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" type="submit" onClick={closeModal}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </form>
-    </Modal>
-
-
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="success" type="submit" onClick={closeModal}>
+              Submit
+            </Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
 
       <Modal show={showMenu} onHide={closeMenu}>
         <Modal.Header closeButton>
@@ -196,13 +203,20 @@ const Dashboard = () => {
         <Modal.Footer>
         </Modal.Footer>
       </Modal>
-
-      
     </div>
   );
 };
 
 export default Dashboard;
+
+
+
+
+
+
+
+
+
 
 
 
