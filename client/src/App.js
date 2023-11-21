@@ -10,7 +10,8 @@ import Footer from './components/Footer';
 import AdminLogin from './components/Login/AdminLogin';
 import StudentLogin from './components/Login/StudentLogin';
 import Register from './components/Register';
-import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import AdminDashboard from './components/Dashboard/AdminDashboard';
+import WardenDashboard from './components/Dashboard/WardenDashboard';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admindashboard" element={<AdminDashboard/>} />
+            <Route path="/warden" element={<WardenDashboard/>} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/student" element={<StudentLogin />} />
             <Route path="/register" element={<Register />} />

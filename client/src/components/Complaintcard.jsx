@@ -47,23 +47,23 @@ function Complaintcard({ complaint }) {
           ))}
         </div> */}
         <div className="title-date-vote-user  row">
-          <div className="votebtn col-3 mt-2">
-            <h2>
+          <div className="votebtn col-3 mt-2 ">
+            <h4>
               <i
                 className="fa-solid fa-circle-up"
                 onClick={handleUpClick}
               ></i>{" "}
               {upCount}
-            </h2>
-            <h2>
+            </h4>
+            <h4>
               <i
                 className="fa-solid fa-circle-down"
                 onClick={handleDownClick}
               ></i>{" "}
               {downCount}
-            </h2>
+            </h4 >
           </div>
-          <div className="col-5 offset-4">
+          <div className="col-5 offset-4 ">
             <h5>made by {complaint.studentName}</h5>
           </div>
         </div>
