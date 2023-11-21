@@ -22,15 +22,14 @@ const wardenSchema = new mongoose.Schema({
         ref: 'schemaChiefWarden'
     },
     profileImg: {
-        type: Buffer,
-        of: String,
+        type: String,
         required: false
     },
     recoveryEmail: {
         type: String,
         required: true
     }
-}, {timestamp: true})
+}, {timestamps: true})
 
 const WardenSchema = mongoose.model('wardenSchema',wardenSchema);
 

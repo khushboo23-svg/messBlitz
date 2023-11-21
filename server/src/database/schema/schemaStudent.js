@@ -30,11 +30,10 @@ const studentSchema = new mongoose.Schema({
         required: false
     },
     profileImg: {
-        type: Buffer,
-        of: String,
+        type: String,
         required: false
     }
-}, {timestamp: true})
+}, {timestamps: true})
 
 const StudentSchema = mongoose.model('studentSchema', studentSchema)
 
