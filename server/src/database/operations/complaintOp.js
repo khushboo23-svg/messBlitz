@@ -2,19 +2,36 @@ const express = require("express")
 const ComplaintSchema = require("../schema/schemaComplaint")
 
 const getAllComplaints = async function(){
-    return ComplaintSchema.find({});
+    return await ComplaintSchema.find({});
 }
 
 const getComplaintsByStudentId = async function(_id){
-    return ComplaintSchema.find({studentId: _id});
+    return await ComplaintSchema.find({studentId: _id});
 }
 
 const getComplaintsByHostelName = async function(hostelName){
-    return ComplaintSchema.find({hostelName: hostelName});
+    return await ComplaintSchema.find({hostelName: hostelName});
 }
 
 const getComplaintById = async function(_id){
-    return ComplaintSchema.findById(_id);
+    return await ComplaintSchema.findById(_id);
+}
+
+const getCommentById = async function(data){
+    let complaint = await ComplaintSchema.findById(data.complaintId);
+    if(complaint){
+        let existingComment = complaint.comments.filter(doc=>data.commentId==doc._id);
+        console.log(existingComment)
+        if(existingComment.lenth!=0){
+            return existingComment[0];
+        }
+        else{
+            return null;
+        }
+    }
+    else{
+        return null;
+    }
 }
 
 const createComplaint = async function(data){
@@ -79,14 +96,32 @@ const deleteCommentById = async function(data){
     return response;
 }
 
-// const toggleLikeInComment = async function(data){
-//     const doc = await ComplaintSchema.findOne({_id: data.complaintId});
-//     let new_comments = doc.comments.filter(comment => comment._id!=data.commentId);
-//     let cur_comment = doc.comments.filter(comment => comment._id==data.commentId)
-//     let new_likes = cur_comment.likes.filter(like=> like!=data._id)
-//     if(new_likes.length===cur_comment.likes.length){
-//         cur_comment
-//     }
-// }
+const toggleLikeInComment = async function(data){
+    let response=-1;
+    const doc = await ComplaintSchema.findOne({_id: data.complaintId});
+    let new_comments = doc.comments.filter(comment => comment._id!=data.commentId);
+    if(new_comments.length===doc.comments.length-1){
+        let cur_comment = doc.comments.filter(comment => comment._id==data.commentId)[0]
+        if(cur_comment.likedBy.length==0){
+            cur_comment.likedBy.push(data._id)
+            response=1;
+        }
+        else{
+            let new_likes = cur_comment.likedBy.filter(like=> like!=data._id)
+            if(new_likes.length===cur_comment.likedBy.length-1){
+                cur_comment.likedBy=new_likes;
+                response=0;
+            }
+            else{
+                cur_comment.likedBy.push(data._id)
+                response=1;
+            }
+        }
+        new_comments.push(cur_comment)
+        doc.comments = new_comments;
+        await doc.save();
+    }
+    return response;
+}
 
-module.exports = {getAllComplaints, getComplaintsByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}
+module.exports = {getAllComplaints, toggleLikeInComment, getComplaintsByHostelName, getCommentById, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}
