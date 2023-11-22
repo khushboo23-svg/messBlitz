@@ -93,10 +93,14 @@ const AdminDashboard = () => {
   useSelector((state)=>{
     console.log(state);
   })
-  const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
+  const authToken = localStorage.getItem('token');
+  const isAuthenticatedChiefWarden = useSelector(
+    (state) => state.chiefwardens.token!==null
+  );
 
-  if(!isAuthenticatedChiefWarden) return <Error/> 
-  else
+  
+  
+  if(localStorage.getItem('token')!==null && isAuthenticatedChiefWarden)
   return (
     <div style={pageStyle}>
       {/* <div className="container mt-5" style={heading}>
@@ -220,6 +224,7 @@ const AdminDashboard = () => {
       </Modal>
     </div>
   );
+  return <Error/>
 };
 
 export default AdminDashboard;

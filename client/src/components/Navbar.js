@@ -23,6 +23,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     // Dispatch the logout action to reset user-related information
+    axios.defaults.headers.common['Authorization'] = undefined;
+    localStorage.removeItem('token');
     axios.post('http://localhost:5500/logout')
     .then((res)=>{
       console.log(res);

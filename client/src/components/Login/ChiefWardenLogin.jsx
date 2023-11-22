@@ -13,6 +13,7 @@ function ChiefWardenLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.chiefwardens.token !== null);
+  const authToken = localStorage.getItem('token');
 
   // useSelector((state)=>{
   //   console.log(state);

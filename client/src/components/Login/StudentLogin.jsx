@@ -32,6 +32,7 @@ const StudentLogin = () => {
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `${token}`;
         
+        
 
 
         // Fetch student data after successful login
@@ -78,8 +79,12 @@ const StudentLogin = () => {
 
   // Handle logout
   const handleLogout = () => {
+    axios.defaults.headers.common['Authorization'] = undefined;
+    console.log("Logging out");
     dispatch(logout());
+
     localStorage.removeItem('token');
+    console.log(localStorage.getItem('token'));
     navigate('/');
   };
 
@@ -88,7 +93,7 @@ const StudentLogin = () => {
       <FormContainer>
         {isAuthenticated ? (
           <form onSubmit={handleLogout}>
-            <button type="submit">Logout</button>
+            <button type="submit" onClick={handleLogout}>Logout</button>
           </form>
         ) : (
           <form onSubmit={handleLogin}>

@@ -129,7 +129,7 @@ function Complaintcard({ complaint, showMyComplaints, onDelete }) {
   };
 
   const handleDelete = () => {
-    onDelete(complaint.id);
+    // onDelete(complaint.id);
   };
 
   return (
