@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { add_complaint } from "../../redux/complaintSlice";
 import axios from "axios";
+import Error from "../Error";
 
 
 const AdminDashboard = () => {
@@ -38,7 +39,7 @@ const AdminDashboard = () => {
 
   const dispatch = useDispatch();
 
-  console.log(studentData);
+  // console.log(studentData);
 
   const handleComplaint = (e) => {
     e.preventDefault();
@@ -89,6 +90,13 @@ const AdminDashboard = () => {
     paddingTop: "5px",
   };
 
+  useSelector((state)=>{
+    console.log(state);
+  })
+  const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
+
+  if(!isAuthenticatedChiefWarden) return <Error/> 
+  else
   return (
     <div style={pageStyle}>
       {/* <div className="container mt-5" style={heading}>

@@ -1,15 +1,24 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import {  useDispatch } from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/studentSlice';
 import axios from 'axios';
+import studentSlice from '../redux/studentSlice';
+import wardenSlice from '../redux/wardenSlice';
+import chiefWardenSlice from '../redux/chiefWardenSlice';
+
 
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const isAuthenticated = useSelector((state) => !!state.students.token);
+
+  useSelector((state)=>{
+    console.log(state);
+  })
+  const isAuthenticatedStudent = useSelector((state) => state.students.token !== null);
+  const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
   const location = useLocation();
 
   const handleLogout = () => {
@@ -19,7 +28,7 @@ const Navbar = () => {
       console.log(res);
       dispatch(logout());
       // Redirect to the home page or login page
-      navigate('/student');
+      navigate('/');
     })
     .catch((err)=>{
       console.log(err);
@@ -38,7 +47,7 @@ const Navbar = () => {
             </h2>
           </div>
           <div className="nav-links p-2 text-light">
-            {(location.pathname === '/dashboard') ? (
+            {((location.pathname === '/dashboard' && isAuthenticatedStudent) || (location.pathname ==='/admindashboard' && isAuthenticatedChiefWarden)) ? (
               // If on the dashboard, show Logout tab
               <button className="text-light" style={logoutStyle} onClick={handleLogout}>
                 Logout

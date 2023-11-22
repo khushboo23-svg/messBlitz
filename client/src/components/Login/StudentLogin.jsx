@@ -12,6 +12,9 @@ const StudentLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.students.token !== null);
+  useSelector((state)=>{
+    console.log(state);
+  })
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 
 import studentReducer from './studentSlice';
 import complaintsReducer from './complaintSlice'; // Import your complaints reducer
+import chiefWardenReducer from './chiefWardenSlice';
 
 const studentPersistConfig = {
   key: 'students',
@@ -19,10 +20,18 @@ const complaintsPersistConfig = {
 
 const persistedComplaintsReducer = persistReducer(complaintsPersistConfig, complaintsReducer);
 
+const chiefWardenPersistConfig = {
+  key: 'chiefwardens',
+  storage,
+};
+
+const persistedChiefWardensReducer = persistReducer(chiefWardenPersistConfig, chiefWardenReducer);
+
 const store = configureStore({
   reducer: {
     students: persistedStudentReducer,
     complaints: persistedComplaintsReducer,
+    chiefwardens: persistedChiefWardensReducer
   },
 });
 
