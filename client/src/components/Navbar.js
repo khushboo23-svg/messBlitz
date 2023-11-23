@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {  useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/studentSlice';
+// import { logout } from '../redux/chiefWardenSlice';
 import axios from 'axios';
 import studentSlice from '../redux/studentSlice';
 import wardenSlice from '../redux/wardenSlice';
@@ -15,7 +16,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useSelector((state)=>{
-    console.log(state);
+    // console.log(state);
   })
   const isAuthenticatedStudent = useSelector((state) => state.students.token !== null);
   const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
@@ -23,6 +24,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     // Dispatch the logout action to reset user-related information
+    console.log("Before logging out : "+localStorage.getItem('token'));
     axios.defaults.headers.common['Authorization'] = undefined;
     localStorage.removeItem('token');
     axios.post('http://localhost:5500/logout')
@@ -30,6 +32,8 @@ const Navbar = () => {
       console.log(res);
       dispatch(logout());
       // Redirect to the home page or login page
+      console.log("Logged out successfully");
+      console.log("After logging out : "+localStorage.getItem('token'));
       navigate('/');
     })
     .catch((err)=>{

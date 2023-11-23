@@ -49,7 +49,7 @@ const Dashboard = () => {
     axios
       .get("http://localhost:5500/student/dashboard")
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.data.status === 200) {
           const studentData = response.data.data;
           // console.log(studentData.name,studentData.email,studentData.regNo,studentData.hostelName);
@@ -103,7 +103,7 @@ const Dashboard = () => {
       });
   };
 
- 
+
 
   const pageStyle = {
     display: "flex",
@@ -139,15 +139,15 @@ const Dashboard = () => {
   };
 
   useSelector((state)=>{
-    console.log(state);
+    // console.log(state);
   })
   const isAuthenticatedStudent = useSelector(
     (state) => state.students.token!==null
   );
 
   const authToken = localStorage.getItem('token');
-  console.log("Localstorage : "+authToken);
-  console.log("store : "+isAuthenticatedStudent);
+  // console.log("Localstorage : "+authToken);
+  // console.log("store : "+isAuthenticatedStudent);
 
     
     if(localStorage.getItem('token')!==null && isAuthenticatedStudent)
@@ -181,25 +181,25 @@ const Dashboard = () => {
           <div className="row justify-content-left">
             <div className="col-md-6 p-2 m-2">
               <button
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 shadow-lg"
                 onClick={() => setShowMyComplaints(false)}
               >
                 All Complaints
               </button>
               <button
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 shadow-lg"
                 onClick={() => setShowMyComplaints(true)}
               >
                 My Complaints
               </button>
               <button
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 shadow-lg"
                 onClick={openMenu}
               >
                 View Mess Menu
               </button>
               <button
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 shadow-lg"
                 style={{ bottom: "180px", right: "20px" }}
                 onClick={openModal}
               >
@@ -294,7 +294,6 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
 
 
 

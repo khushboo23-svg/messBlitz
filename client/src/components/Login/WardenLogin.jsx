@@ -59,11 +59,6 @@ function ChiefWardenLogin() {
   return (
     <>
          <FormContainer>
-        {isAuthenticated ? (
-          <form onSubmit={handleLogout}>
-            <button type="submit">Logout</button>
-          </form>
-        ) : (
           <form onSubmit={handleLogin}>
             <div className="brand">
               <h3>WARDEN LOGIN</h3>
@@ -82,7 +77,7 @@ function ChiefWardenLogin() {
             />
             <button type="submit">Login</button>
           </form>
-        )}
+        
       </FormContainer>
       <ToastContainer />
     </>

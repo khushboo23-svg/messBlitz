@@ -7,13 +7,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { redirect_to_dashboard,logout } from "../../redux/chiefWardenSlice";
+import Error from "../Error";
 
 
 function ChiefWardenLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.chiefwardens.token !== null);
-  const authToken = localStorage.getItem('token');
+  
 
   // useSelector((state)=>{
   //   console.log(state);
@@ -57,14 +58,15 @@ function ChiefWardenLogin() {
     navigate('/');
   };
 
+  const isAuthenticatedChiefWarden = useSelector((state)=> 
+    state.chiefwardens.token!==null
+  );
+  const authToken = localStorage.getItem('token');
+
+  
   return (
     <>
          <FormContainer>
-        {isAuthenticated ? (
-          <form onSubmit={handleLogout}>
-            <button type="submit">Logout</button>
-          </form>
-        ) : (
           <form onSubmit={handleLogin}>
             <div className="brand">
               <h3>CHIEF WARDEN LOGIN</h3>
@@ -83,11 +85,11 @@ function ChiefWardenLogin() {
             />
             <button type="submit">Login</button>
           </form>
-        )}
       </FormContainer>
       <ToastContainer />
     </>
   )
+  
 }
 
 
