@@ -124,4 +124,78 @@ const toggleLikeInComment = async function(data){
     return response;
 }
 
-module.exports = {getAllComplaints, toggleLikeInComment, getComplaintsByHostelName, getCommentById, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}
+const getAllComplaintsWithStatusByHostelName = async function(data){
+    complaints= await getAllComplaints(data.hostelName);
+    let new_complaints = [];
+    complaints.forEach((complaint)=>{
+        if(complaint.upvoteId.includes(data._id)){
+            new_complaints.push({...complaint._doc, voteStatus: 1});
+        }
+        else if(complaint.downvoteId.includes(data._id)){
+            new_complaints.push({...complaint._doc, voteStatus: -1});
+        }
+        else{
+            new_complaints.push({...complaint._doc, voteStatus: 0});
+        }
+    })
+    return new_complaints;
+}
+
+const isUpvoted = async function(data){
+    const complaint = await getComplaintById(data.complaintId);
+    let status;
+    // console.log(typeof complaint.upvoteId)
+    if(complaint.upvoteId.includes(data._id)){
+        status = true;
+    }
+    else
+        status = false;
+    return status;
+}
+
+const isDownvoted = async function(data){
+    const complaint = await getComplaintById(data.complaintId);
+    let status;
+    if(complaint.downvoteId.includes(data._id)){
+        status = true;
+    }
+    else
+        status = false;
+    return status;
+}
+
+const addUpvote = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
+    if(complaint){
+        complaint.upvoteId.push(data._id);
+        await complaint.save();
+    }
+}
+
+const addDownvote  = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId})
+    if(complaint){
+        complaint.downvoteId.push(data._id);
+        await complaint.save();
+    }
+}
+
+const removeUpvote = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
+    if(complaint){
+        let newUpvoteId = complaint.upvoteId.filter(id=>id!=data._id);
+        complaint.upvoteId = newUpvoteId;
+        await complaint.save();
+    }
+}
+
+const removeDownvote = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
+    if(complaint){
+        let newDownvoteId = complaint.upvoteId.filter(id=>id!=data._id);
+        complaint.downvoteId = newDownvoteId;
+        await complaint.save();
+    }
+}
+
+module.exports = {isDownvoted, isUpvoted, addDownvote, addUpvote, removeUpvote, removeDownvote, getAllComplaintsWithStatusByHostelName, getAllComplaints, toggleLikeInComment, getComplaintsByHostelName, getCommentById, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}

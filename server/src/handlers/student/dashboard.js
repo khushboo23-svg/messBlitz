@@ -1,15 +1,21 @@
-const { getCommentById,getComplaintsByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById, deleteComplaintbyId, addCommentInComplaint, deleteCommentById, toggleLikeInComment } = require("../../database/operations/complaintOp");
+const { isUpvoted, isDownvoted, addUpvote, addDownvote, removeDownvote, removeUpvote, getCommentById,getComplaintsByHostelName, getAllComplaintsWithStatusByHostelName, getComplaintsByStudentId, createComplaint, getComplaintById, deleteComplaintbyId, addCommentInComplaint, deleteCommentById, toggleLikeInComment } = require("../../database/operations/complaintOp");
 const { getStudentbyId } = require("../../database/operations/studentOp");
 
 const studentDashboard = async function(req,res,next){
     let student = await getStudentbyId(req.sid);
     if(student){
+        let complaints = await getAllComplaintsWithStatusByHostelName({hostelName: student.hostelName, _id: req.sid});
+        let processedComplaint = [];
+        for (let complaint of complaints) {
+            let complaintStudent=await getStudentbyId(req.sid)
+            processedComplaint.push({...complaint, studentName:complaintStudent.name, studentRegNo:complaintStudent.regNo});
+        }
         res.send({
             status:200,
             data: {
                 ...student,
-                complaints: await getComplaintsByHostelName(student.hostelName),
-                myComplaints: await getComplaintsByStudentId(req.sid)
+                complaints: processedComplaint,
+                myComplaints: processedComplaint.filter(doc=>doc.studentId == req.sid)
             }
         })
     }
@@ -101,4 +107,61 @@ const toggleLike = async function(req, res){
     }
 }
 
-module.exports = {studentDashboard, addComplaint, deleteComplaint, getComplaint, addComment, deleteComment, toggleLike}
+const upvote = async function(req, res){
+    const {complaintId} = req.body;
+    let complaint = getComplaintById(complaintId);
+    if(complaint){
+        try{
+            if(await isUpvoted({_id: req.sid, complaintId})){
+                await removeUpvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "removed upvote successfully"}})
+            }
+            else if(await isDownvoted({_id: req.sid, complaintId})){
+                await removeDownvote({_id: req.sid, complaintId});
+                await addUpvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "removed downvote and upvoted successfully"}})
+            }
+            else{
+                await addUpvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "upvoted successfully"}})
+            }
+        }
+        catch(err){
+            res.send({status: 400, message: "error:"+err})
+        }
+    }
+    else{
+        res.send({status: 400, message: "error: complaint doesnt exist anymore"})
+    }
+}
+
+const downvote = async function(req, res){
+    const {complaintId} = req.body;
+    let complaint = getComplaintById(complaintId);
+    if(complaint){
+        try{
+            if(await isDownvoted({_id: req.sid, complaintId})){
+                await removeDownvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "removed downvote successfully"}})
+            }
+            else if(await isUpvoted({_id: req.sid, complaintId})){
+                await removeUpvote({_id: req.sid, complaintId});
+                await addDownvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "removed upvote and downvoted successfully"}})
+            }
+            else{
+                await addDownvote({_id: req.sid, complaintId});
+                res.send({status: 200, data: {message: "downvoted successfully"}})
+            }
+        }
+        catch(err){
+            res.send({status: 400, message: "error:"+err})
+        }
+    }
+    else{
+        res.send({status: 400, message: "error: complaint doesnt exist anymore"})
+    }
+}
+
+
+module.exports = {upvote, downvote, studentDashboard, addComplaint, deleteComplaint, getComplaint, addComment, deleteComment, toggleLike}
