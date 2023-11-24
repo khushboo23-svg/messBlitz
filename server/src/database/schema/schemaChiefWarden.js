@@ -14,16 +14,15 @@ const schemaChiefWarden = new mongoose.Schema({
         required: true
     },
     profileImg: {
-        type: Buffer,
-        of: String,
+        type: String,
         required: false
     },
     recoveryEmail: {
         type: String,
         required: true
     }
-}, {timestamp: true})
+}, {timestamps: true})
 
-const ChiefWardenSchema = mongoose.model('schemaChiefWarden',schemaChiefWarden);
+const ChiefWardenSchema = mongoose.model('chiefWardenSchema',schemaChiefWarden);
 
 module.exports = ChiefWardenSchema

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import {useDispatch} from 'react-redux'
 import { add_complaint,get_all_complaints,get_my_complaints } from '../../redux/complaintSlice';
 import axios from 'axios';
-
+import Error from '../Error';
 import Complaintcard from '../Complaintcard';
 
 
@@ -21,6 +21,8 @@ const WardenDashboard = () => {
   const allComplaints = useSelector((state) => state.complaints.complaints);
   console.log(allComplaints.complaints);
   console.log(myComplaints.myComplaints);
+
+  const authToken = localStorage.getItem('token');
 
 
 

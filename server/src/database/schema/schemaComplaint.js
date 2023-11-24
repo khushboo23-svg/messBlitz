@@ -10,9 +10,7 @@ const complaintSchema = new mongoose.Schema({
         required: true
     },
     proofImg: {
-        type: Buffer,
-        of: String,
-        required:false
+        type: String
     },
     upvoteId: {
         type: Array,
@@ -31,9 +29,9 @@ const complaintSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    comment: [{
+    comments: [{
         type: new mongoose.Schema({
-            text: {
+            comment: {
                 type: String,
                 required: true
             },
@@ -45,9 +43,9 @@ const complaintSchema = new mongoose.Schema({
                 type: mongoose.Types.ObjectId,
                 ref: 'studentSchema'
             }]
-        },{timestamp: true})}]
+        },{timestamps: true})}]
     
-}, {timestamp: true})
+}, {timestamps: true})
 
 const ComplaintSchema = mongoose.model('complaintSchema', complaintSchema)
 

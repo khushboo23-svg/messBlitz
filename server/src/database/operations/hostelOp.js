@@ -24,4 +24,8 @@ const createHostel = async function(data){
     return response;
 }
 
-module.exports = {isValidHostelName, createHostel}
+const getAllHostels = async function(){
+    return await HostelSchema.find({});
+}
+
+module.exports = {isValidHostelName, createHostel, getAllHostels}

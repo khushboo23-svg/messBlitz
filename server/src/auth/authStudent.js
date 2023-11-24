@@ -5,7 +5,7 @@ const authS = async function(req, res,next){
         console.log(req.get('authorization'))
         const {_id} = await jwt.verify(req.get("authorization"), process.env.SECRET_KEY)
         if(!(await isValidStudentId(_id))){
-            res.send({status: 400, message:"You are not authorized to do thiss"});
+            res.send({status: 400, message:"You are not authorized to do this"});
         }
         else{
             req.sid = _id;
