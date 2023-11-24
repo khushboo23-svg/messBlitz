@@ -23,7 +23,10 @@ const AdminDashboard = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
 
   const studentData = useSelector((state) => state.students);
-  console.log(studentData);
+  // console.log(studentData);
+
+  const allHostelData = useSelector((state)=> state.hostels.hostels);
+  console.log(allHostelData);
 
   const [wardenName, setWardenName] = useState();
   const [wardenEmail, setWardenEmail] = useState();
@@ -35,6 +38,25 @@ const AdminDashboard = () => {
   const chiefWardenData = useSelector((state) => state.chiefwardens);
   const chiefWardenEmail = chiefWardenData.email;
   const chiefWardenPassword = chiefWardenData.password;
+  const [complaintsPopUp,setcomplaintsPopUp] = useState(false);
+
+
+
+
+
+  const [showComplaintsModal, setShowComplaintsModal] = useState(false);
+
+  const complaintsDisplayFunc = () => {
+    setShowComplaintsModal(true);
+    // Additional logic for fetching and displaying complaints can be added here
+  };
+
+  const closeModal = () => {
+    setShowComplaintsModal(false);
+  };
+
+
+
 
 
   const complaints = useSelector((state)=> 
@@ -51,6 +73,8 @@ const AdminDashboard = () => {
     setHostelsClicked(true);
     setUnassignedWardensClicked(false);
   };
+
+  
 
   const toggleComplaintsVisibility = (hostelName) => {
     setSelectedHostel(selectedHostel === hostelName ? null : hostelName);
@@ -115,10 +139,10 @@ const AdminDashboard = () => {
     objectFit: "cover",
   };
 
-  const HostelRow = ({ hostelName, wardenName }) => (
+  const HostelRow = ({ allHostelData, wardenName }) => (
     <>
       <div className="hostel-row row my-3 ">
-        <div className="hostel-name col-5">{hostelName}</div>
+        <div className="hostel-name col-5">{allHostelData}</div>
         <div className="warden-name col-5">{wardenName}</div>
         <button className="btn btn-success col-2 " onClick={() => toggleComplaintsVisibility(hostelName)}>
           View Complaints
@@ -135,11 +159,15 @@ const AdminDashboard = () => {
     </>
   );
 
-  const hostelsData = [
-    { hostelName: "Hostel A", wardenName: "Warden 1" },
-    { hostelName: "Hostel B", wardenName: "Warden 2" },
-    { hostelName: "Hostel C", wardenName: "Warden 3" },
-  ];
+
+  
+  
+
+  // const hostelsData = [
+  //   { hostelName: "Hostel A", wardenName: "Warden 1" },
+  //   { hostelName: "Hostel B", wardenName: "Warden 2" },
+  //   { hostelName: "Hostel C", wardenName: "Warden 3" },
+  // ];
 
   const [title, settitle] = useState("");
   const studentName = studentData.name;
@@ -238,11 +266,11 @@ const AdminDashboard = () => {
 
         {hostelsClicked && (
           <div className="container mt-5">
-            {hostelsData.map((hostel, index) => (
+            {allHostelData.data.map((hostel, index) => (
               <HostelRow
                 key={index}
                 hostelName={hostel.hostelName}
-                wardenName={hostel.wardenName}
+                wardenName={hostel.name}
               />
             ))}
           </div>
@@ -316,6 +344,52 @@ const AdminDashboard = () => {
           </form>
         </Modal>
 
+
+        {/* <Modal show={showHostPopup} onHide={closeHostelPopup}>
+          <form onSubmit={registerHostel}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Hostel</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <input
+                type="email"
+                placeholder="Warden-Email"
+                style={inputStyle}
+                required
+                onChange={(e) => setHostelWardenEmail(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Hostel-Name"
+                style={inputStyle}
+                required
+                onChange={(e) => setHostelName(e.target.value)}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit" onClick={closeHostelPopup}>
+                Submit
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal> */}
+
+        <div className="container m-5">
+          <div className="row d-flex justify-content-center align-items-center">
+              {allHostelData.data.map((hostel, index) => (
+                <div key={index} className="col-md-4 text-center justify-content-center align-items-center border border-primary m-1 p-5">
+                    <p>{hostel.hostelName}</p>
+                    <br />
+                    <p>{hostel.name}</p>
+                    <br />
+                    <button className="btn btn-success">
+                      view Complaints
+                    </button>
+                </div>
+              ))}
+          </div>
+        </div>
         <Footer />
       </div>
     );

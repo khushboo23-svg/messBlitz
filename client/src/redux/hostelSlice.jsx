@@ -12,6 +12,7 @@ const hostelSlice = createSlice({
     },
     get_hostels_data: (state,action) => {
         state.hostels = action.payload
+        console.log(action.payload);
     }
   },
 });
