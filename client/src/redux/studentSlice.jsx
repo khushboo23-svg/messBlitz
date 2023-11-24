@@ -21,7 +21,7 @@ const studentSlice = createSlice({
     },
     redirect_to_dashboard: (state, action) => {
       // console.log(action.payload.token);
-      state.name = action.payload.name;
+      state.name = action.payload.name; 
       state.email = action.payload.email;
       state.regNo = action.payload.regNo;
       state.hostelName = action.payload.hostelName;

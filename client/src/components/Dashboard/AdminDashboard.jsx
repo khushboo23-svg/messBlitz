@@ -6,6 +6,11 @@ import { useDispatch } from "react-redux";
 import { add_complaint } from "../../redux/complaintSlice";
 import axios from "axios";
 import Error from "../Error";
+import Footer from "../Footer";
+import defaultProfilePic from "../../images/user.png";
+import chiefWardenSlice from "../../redux/chiefWardenSlice";
+import { toast } from "react-toastify";
+
 
 
 const AdminDashboard = () => {
@@ -13,6 +18,45 @@ const AdminDashboard = () => {
   const [showHostelPopup, setshowHostelPopup] = useState(false); 
   const studentData = useSelector((state) => state.students);
   const [HostelList, setHostelList] = useState(true);
+
+
+  const [wardenName,setWardenName] = useState();
+  const [wardenEmail,setWardenEmail] = useState();
+  const [wardenRecoveryEmail,setWardenRecoveryEmail] = useState();
+
+  const chiefWardenData = useSelector((state)=> 
+    state.chiefwardens
+  )
+  const chiefWardenEmail = chiefWardenData.email;
+  const chiefWardenPassword = chiefWardenData.password;
+  // console.log(chiefWardenData);
+
+  const registerWarden = () => {
+    axios.post("http://localhost:5500/chiefWarden/registerWarden",{
+      wardenName,
+      wardenEmail,
+      wardenRecoveryEmail,
+    }).then((res)=> { 
+      console.log("registered successfully");
+    }).catch((err)=>{
+      console.log("cant register the warden");
+    })
+  }
+
+  
+
+  const heading = {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: "20px",
+    borderRadius: "10px",
+    // border: "2px solid rgba(255, 255, 255, 0.3)",
+  };
+  const profilePicStyle = {
+    width: "70px",
+    height: "70px",
+    borderRadius: "50%",
+    objectFit: "cover",
+  };
 
 
   // function for hostels list---------------------
@@ -36,6 +80,10 @@ const AdminDashboard = () => {
 // ------------------------------
   const [title, settitle] = useState("");
   const studentName = studentData.name;
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
 
   const dispatch = useDispatch();
 
@@ -74,9 +122,9 @@ const AdminDashboard = () => {
   const openHostelPopup = () => setshowHostelPopup(true);
   const closeHostelPopup = () => setshowHostelPopup(false);
 
-  const openList = () => {
+  const openHostelList = () => {
     setHostelList(!HostelList);
-   
+    
   };
 
   const inputStyle = {
@@ -103,26 +151,26 @@ const AdminDashboard = () => {
   if(localStorage.getItem('token')!==null && isAuthenticatedChiefWarden)
   return (
     <div style={pageStyle}>
-      {/* <div className="container mt-5" style={heading}>
+      <div className="container mt-5" style={heading}>
         <div className="row">
           <div className="col-md-6">
-            <span style={{ fontSize: '30px' }}>Hostel Name : {studentData.hostelName} <p style={{fontSize: '20px'}}>Room No: {studentData.roomNo}</p></span> 
+            <span style={{ fontSize: '20px' }}>Chief Warden Email : {chiefWardenData.email} </span> 
             
           </div>
-          <div className="col-md-5" align="right">
+          {/* <div className="col-md-5" align="right">
             <p>Registration Number: {studentData.regNo}</p>
             <p>Name: {studentData.name}</p>
           </div>
           <div className="col-md-1 d-flex justify-content-center align-items-center">
             <img src={defaultProfilePic} alt="Profile" style={profilePicStyle} />
-          </div>
+          </div> */}
         </div>
-      </div> */}
+      </div>
 
       <div className="container">
         <div className="row justify-content-left">
           <div className="col-md-6 p-2 m-2">
-            <button id="hostelButton" className="btn btn-primary m-1 " onClick={openList}>
+            <button id="hostelButton" className="btn btn-primary m-1 " onClick={toggleVisibility}>
               Hostels
             </button>
             <button className="btn btn-primary m-1" onClick={openWardenPopup}>
@@ -138,10 +186,10 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-      <hr style={{ width: "90%", marginLeft: "5%" }} />
+      {/* <hr style={{ width: "90%", marginLeft: "5%" }} /> */}
 
-      {HostelList && (
-        <div className="container mt-1">
+      
+        <div className="container mt-5">
           {hostelsData.map((hostel, index) => (
             <HostelRow
               key={index}
@@ -150,14 +198,14 @@ const AdminDashboard = () => {
             />
           ))}
         </div>
-      )}
+      
 
       <div className="flex-grow-1"></div>
 
       {/* <Footer /> */}
 
       <Modal show={showWardenPopup} onHide={closeWardenPopup}>
-        <form onSubmit={handleComplaint}>
+        <form onSubmit={registerWarden}>
           <Modal.Header closeButton>
             <Modal.Title>Add New Warden</Modal.Title>
           </Modal.Header>
@@ -167,25 +215,25 @@ const AdminDashboard = () => {
               placeholder="Email"
               style={inputStyle}
               required
-              onChange={(e) => settitle(e.target.value)}
+              onChange={(e) => setWardenEmail(e.target.value)}
             />
             <input
               type="email"
               placeholder="Recovery-Email"
               style={inputStyle}
               required
-              onChange={(e) => settitle(e.target.value)}
+              onChange={(e) => setWardenRecoveryEmail(e.target.value)}
             />
             <input
               type="text"
               placeholder="Name"
               style={inputStyle}
               required
-              onChange={(e) => settitle(e.target.value)}
+              onChange={(e) => setWardenName(e.target.value)}
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="success" type="submit" onClick={closeWardenPopup}>
+            <Button variant="success" type="submit" onClick={registerWarden}>
               Submit
             </Button>
           </Modal.Footer>
@@ -222,6 +270,7 @@ const AdminDashboard = () => {
           </Modal.Footer>
         </form>
       </Modal>
+      <Footer/>
     </div>
   );
   return <Error/>

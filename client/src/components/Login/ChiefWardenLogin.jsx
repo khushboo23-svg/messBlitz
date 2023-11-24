@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { redirect_to_dashboard,logout } from "../../redux/chiefWardenSlice";
+import { redirect_to_dashboard,logout, get_chiefWarden_data } from "../../redux/chiefWardenSlice";
 import Error from "../Error";
 import Footer from "../Footer";
 
@@ -35,8 +35,14 @@ function ChiefWardenLogin() {
         const token = res.data.data.token;
         console.log("Token is : "+token);
         localStorage.setItem('token', token);
+        console.log(res.data);
         axios.defaults.headers.common['Authorization'] = `${token}`;
-        dispatch(redirect_to_dashboard(res.data));
+        dispatch(redirect_to_dashboard({
+          email : email,
+          password : password,
+          token : token,
+        })); 
+        dispatch(get_chiefWarden_data({email : email,password : password}));
         navigate("/admindashboard");
       })
       .catch((err) => {
