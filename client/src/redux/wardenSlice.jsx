@@ -1,31 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  chiefwardens: [],
-  token: null,
-  name: null,
-  email: null,
-  password: null,
-  recoveryEmail: null,
+  wardens: [],
 };
 
 const wardenSlice = createSlice({
-  name: "chiefwardens",
+  name: "wardens",
   initialState,
   reducers: {
+    create_warden: (state, action) => {
+      console.log(action.payload);
+      state.wardens.push(action.payload);
+    },
     redirect_to_dashboard: (state, action) => {
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.token = action.payload.token;
+      
     },
     logout: (state) => {
-      // Reset user-related information on logout
-      state.name = null;
-      state.email = null;
-      state.token = null;
+      
     },
   },
 });
 
-export const {  redirect_to_dashboard, logout } = wardenSlice.actions;
+export const {  redirect_to_dashboard, logout, create_warden } = wardenSlice.actions;
 export default wardenSlice.reducer;

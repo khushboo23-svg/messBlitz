@@ -28,7 +28,10 @@ function Register() {
   useEffect(() => {
     // Fetch hostel options from the API
     axios.get('http://localhost:5500/getAllHostels')
-      .then(response => setHostelOptions(response.data.data.hostels))
+      .then(response => {
+        console.log(response);
+        setHostelOptions(response.data.data.hostels);
+      })
       .catch(error => {
         console.error('Error fetching hostel options:', error);
         toast.error("Error fetching hostel options");

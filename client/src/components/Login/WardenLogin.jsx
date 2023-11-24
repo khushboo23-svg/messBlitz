@@ -24,17 +24,18 @@ function ChiefWardenLogin() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:5500/loginChiefWarden', {
+    axios.post('http://localhost:5500/warden/login', {
       email,
       password,
     })
       .then((res) => {
+        console.log(res);
         const token = res.data.data.token;
         console.log("Token is : "+token);
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `${token}`;
 
-        navigate("/admindashboard");
+        navigate("/warden");
       })
       .catch((err) => {
         if (

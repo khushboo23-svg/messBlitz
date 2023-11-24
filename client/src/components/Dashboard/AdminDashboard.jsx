@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -10,47 +9,105 @@ import Footer from "../Footer";
 import defaultProfilePic from "../../images/user.png";
 import chiefWardenSlice from "../../redux/chiefWardenSlice";
 import { toast } from "react-toastify";
-
+import { create_warden } from "../../redux/wardenSlice";
+import { get_all_complaints } from "../../redux/complaintSlice";
+import { get_hostels_data } from "../../redux/hostelSlice";
 
 
 const AdminDashboard = () => {
-  const [showWardenPopup, setshowWardenPopup] = useState(false); 
-  const [showHostelPopup, setshowHostelPopup] = useState(false); 
-  const studentData = useSelector((state) => state.students);
+  const [showWardenPopup, setshowWardenPopup] = useState(false);
+  const [showHostelPopup, setshowHostelPopup] = useState(false);
   const [HostelList, setHostelList] = useState(true);
+  const [unassignedWardensClicked, setUnassignedWardensClicked] = useState(false);
+  const [hostelsClicked, setHostelsClicked] = useState(true);
+  const [selectedHostel, setSelectedHostel] = useState(null);
 
+  const studentData = useSelector((state) => state.students);
+  console.log(studentData);
 
-  const [wardenName,setWardenName] = useState();
-  const [wardenEmail,setWardenEmail] = useState();
-  const [wardenRecoveryEmail,setWardenRecoveryEmail] = useState();
+  const [wardenName, setWardenName] = useState();
+  const [wardenEmail, setWardenEmail] = useState();
+  const [wardenRecoveryEmail, setWardenRecoveryEmail] = useState();
 
-  const chiefWardenData = useSelector((state)=> 
-    state.chiefwardens
-  )
+  const [hostelWardenEmail, setHostelWardenEmail] = useState();
+  const [hostelName, setHostelName] = useState();
+
+  const chiefWardenData = useSelector((state) => state.chiefwardens);
   const chiefWardenEmail = chiefWardenData.email;
   const chiefWardenPassword = chiefWardenData.password;
-  // console.log(chiefWardenData);
 
-  const registerWarden = () => {
-    axios.post("http://localhost:5500/chiefWarden/registerWarden",{
-      wardenName,
-      wardenEmail,
-      wardenRecoveryEmail,
-    }).then((res)=> { 
-      console.log("registered successfully");
-    }).catch((err)=>{
+
+  const complaints = useSelector((state)=> 
+    state.complaints
+  )
+  console.log(complaints);
+
+  const openUnassignedWardens = () => {
+    setUnassignedWardensClicked(true);
+    setHostelsClicked(false);
+  };
+
+  const openHostels = () => {
+    setHostelsClicked(true);
+    setUnassignedWardensClicked(false);
+  };
+
+  const toggleComplaintsVisibility = (hostelName) => {
+    setSelectedHostel(selectedHostel === hostelName ? null : hostelName);
+  };
+
+  const ComplaintCard = ({ complaintText }) => (
+    <div className="card">
+      <div className="card-body">
+        {complaintText}
+      </div>
+    </div>
+  );
+
+  const registerWarden = (e) => {
+    e.preventDefault();
+    setshowWardenPopup(false);
+    axios.post("http://localhost:5500/chiefWarden/registerWarden", {
+      name: wardenName,
+      email: wardenEmail,
+      recoveryEmail: wardenRecoveryEmail,
+    }).then((res) => {
+      console.log(res);
+      
+      if(res.data.data.status !== 200){
+        console.log(res);
+        console.log("warden registered successfully");
+        dispatch(create_warden({
+        name: wardenName,
+        email: wardenEmail,
+        recoveryEmail: wardenRecoveryEmail,
+      }));
+      }else console.log("Cant register");
+    }).catch((err) => {
       console.log("cant register the warden");
-    })
-  }
+    });
+  };
 
-  
+  const registerHostel = (e) => {
+    e.preventDefault();
+    setshowHostelPopup(false);
+    axios.post("http://localhost:5500/chiefWarden/registerHostel", {
+      hostelName,
+      warden: hostelWardenEmail,
+      messMenu: "demo",
+    }).then((res) => {
+      console.log("hostel registered successfully");
+    }).catch((err) => {
+      console.log("cant register the hostel");
+    });
+  };
 
   const heading = {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: "20px",
     borderRadius: "10px",
-    // border: "2px solid rgba(255, 255, 255, 0.3)",
   };
+
   const profilePicStyle = {
     width: "70px",
     height: "70px",
@@ -58,16 +115,23 @@ const AdminDashboard = () => {
     objectFit: "cover",
   };
 
-
-  // function for hostels list---------------------
   const HostelRow = ({ hostelName, wardenName }) => (
     <>
-    <div className="hostel-row row my-3 ">
-      <div className="hostel-name col-5">{hostelName}</div>
-      <div className="warden-name col-5">{wardenName}</div>
-      <button className="btn btn-success col-2 " >View Complaints</button>
-    </div>
-    <hr />
+      <div className="hostel-row row my-3 ">
+        <div className="hostel-name col-5">{hostelName}</div>
+        <div className="warden-name col-5">{wardenName}</div>
+        <button className="btn btn-success col-2 " onClick={() => toggleComplaintsVisibility(hostelName)}>
+          View Complaints
+        </button>
+      </div>
+      <hr />
+      {selectedHostel === hostelName && (
+        <div className="mt-3">
+          <ComplaintCard complaintText="Dummy Complaint 1" />
+          <ComplaintCard complaintText="Dummy Complaint 2" />
+          {/* Add more ComplaintCard components as needed */}
+        </div>
+      )}
     </>
   );
 
@@ -77,7 +141,6 @@ const AdminDashboard = () => {
     { hostelName: "Hostel C", wardenName: "Warden 3" },
   ];
 
-// ------------------------------
   const [title, settitle] = useState("");
   const studentName = studentData.name;
   const [isVisible, setIsVisible] = useState(false);
@@ -87,26 +150,17 @@ const AdminDashboard = () => {
 
   const dispatch = useDispatch();
 
-  // console.log(studentData);
-
-  const handleComplaint = (e) => {
-    e.preventDefault();
-    axios
-      .post("http://localhost:5500/student/addComplaint", {
-        title,
-        studentName,
-      })
-      .then((res) => {
-        console.log(res);
-        // toast.success('complaint added successfully')
-        dispatch(add_complaint(res.data));
-
-        // console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const handleComplaint = (e) => {
+  //   e.preventDefault();
+  //   axios.post("http://localhost:5500/student/addComplaint", {
+  //     title,
+  //     studentName,
+  //   }).then((res) => {
+  //     dispatch(add_complaint(res.data));
+  //   }).catch((err) => {
+  //     console.log(err);
+  //   });
+  // };
 
   const pageStyle = {
     display: "flex",
@@ -124,7 +178,6 @@ const AdminDashboard = () => {
 
   const openHostelList = () => {
     setHostelList(!HostelList);
-    
   };
 
   const inputStyle = {
@@ -138,142 +191,136 @@ const AdminDashboard = () => {
     paddingTop: "5px",
   };
 
-  useSelector((state)=>{
+  useSelector((state) => {
     console.log(state);
-  })
+  });
+
   const authToken = localStorage.getItem('token');
   const isAuthenticatedChiefWarden = useSelector(
-    (state) => state.chiefwardens.token!==null
+    (state) => state.chiefwardens.token !== null
   );
 
-  
-  
-  if(localStorage.getItem('token')!==null && isAuthenticatedChiefWarden)
-  return (
-    <div style={pageStyle}>
-      <div className="container mt-5" style={heading}>
-        <div className="row">
-          <div className="col-md-6">
-            <span style={{ fontSize: '20px' }}>Chief Warden Email : {chiefWardenData.email} </span> 
-            
+  if (localStorage.getItem('token') !== null && isAuthenticatedChiefWarden) {
+    return (
+      <div style={pageStyle}>
+        <div className="container mt-5" style={heading}>
+          <div className="row">
+            <div className="col-md-6">
+              <span style={{ fontSize: '20px' }}>Chief Warden Email : {chiefWardenData.email} </span>
+            </div>
           </div>
-          {/* <div className="col-md-5" align="right">
-            <p>Registration Number: {studentData.regNo}</p>
-            <p>Name: {studentData.name}</p>
-          </div>
-          <div className="col-md-1 d-flex justify-content-center align-items-center">
-            <img src={defaultProfilePic} alt="Profile" style={profilePicStyle} />
-          </div> */}
         </div>
+
+        <div className="container">
+          <div className="row justify-content-left">
+            <div className="col-md-6 p-2 m-2">
+              <button id="hostelButton" className="btn btn-primary m-1" onClick={openHostels}>
+                Hostels
+              </button>
+              <button className="btn btn-primary m-1" onClick={openWardenPopup}>
+                Add Warden
+              </button>
+              <button className="btn btn-primary m-1" onClick={openHostelPopup}>
+                Add Hostel
+              </button>
+              <button className="btn btn-primary m-1" onClick={openUnassignedWardens}>
+                Unassigned Wardens
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {unassignedWardensClicked && (
+          <div className="container mt-3">
+            <p>Text or content for Unassigned Wardens goes here.</p>
+          </div>
+        )}
+
+        {hostelsClicked && (
+          <div className="container mt-5">
+            {hostelsData.map((hostel, index) => (
+              <HostelRow
+                key={index}
+                hostelName={hostel.hostelName}
+                wardenName={hostel.wardenName}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="flex-grow-1"></div>
+
+        <Modal show={showWardenPopup} onHide={closeWardenPopup}>
+          <form onSubmit={registerWarden}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Warden</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <input
+                type="email"
+                placeholder="Email"
+                style={inputStyle}
+                required
+                onChange={(e) => setWardenEmail(e.target.value)}
+              />
+              <input
+                type="email"
+                placeholder="Recovery-Email"
+                style={inputStyle}
+                required
+                onChange={(e) => setWardenRecoveryEmail(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Name"
+                style={inputStyle}
+                required
+                onChange={(e) => setWardenName(e.target.value)}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit" onClick={registerWarden}>
+                Submit
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+
+        <Modal show={showHostelPopup} onHide={closeHostelPopup}>
+          <form onSubmit={registerHostel}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Hostel</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <input
+                type="email"
+                placeholder="Warden-Email"
+                style={inputStyle}
+                required
+                onChange={(e) => setHostelWardenEmail(e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Hostel-Name"
+                style={inputStyle}
+                required
+                onChange={(e) => setHostelName(e.target.value)}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit" onClick={closeHostelPopup}>
+                Submit
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
+
+        <Footer />
       </div>
-
-      <div className="container">
-        <div className="row justify-content-left">
-          <div className="col-md-6 p-2 m-2">
-            <button id="hostelButton" className="btn btn-primary m-1 " onClick={toggleVisibility}>
-              Hostels
-            </button>
-            <button className="btn btn-primary m-1" onClick={openWardenPopup}>
-              Add Warden
-            </button>
-            <button className="btn btn-primary m-1" onClick={openHostelPopup}>
-              Add Hostel
-            </button>
-            {/* <button className="btn btn-primary m-1" style={{ bottom: '180px', right: '20px' }} onClick={openWardenPopup}>
-                Add complaint
-                </button>
-                 */}
-          </div>
-        </div>
-      </div>
-      {/* <hr style={{ width: "90%", marginLeft: "5%" }} /> */}
-
-      
-        <div className="container mt-5">
-          {hostelsData.map((hostel, index) => (
-            <HostelRow
-              key={index}
-              hostelName={hostel.hostelName}
-              wardenName={hostel.wardenName}
-            />
-          ))}
-        </div>
-      
-
-      <div className="flex-grow-1"></div>
-
-      {/* <Footer /> */}
-
-      <Modal show={showWardenPopup} onHide={closeWardenPopup}>
-        <form onSubmit={registerWarden}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add New Warden</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <input
-              type="email"
-              placeholder="Email"
-              style={inputStyle}
-              required
-              onChange={(e) => setWardenEmail(e.target.value)}
-            />
-            <input
-              type="email"
-              placeholder="Recovery-Email"
-              style={inputStyle}
-              required
-              onChange={(e) => setWardenRecoveryEmail(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Name"
-              style={inputStyle}
-              required
-              onChange={(e) => setWardenName(e.target.value)}
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="success" type="submit" onClick={registerWarden}>
-              Submit
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-
-      {/* ------------------------------------------------- */}
-      <Modal show={showHostelPopup} onHide={closeHostelPopup}>
-        <form onSubmit={handleComplaint}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add New Hostel</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <input
-              type="email"
-              placeholder="Warden-Email"
-              style={inputStyle}
-              required
-              onChange={(e) => settitle(e.target.value)}
-            />
-
-            <input
-              type="text"
-              placeholder="Hostel-Name"
-              style={inputStyle}
-              required
-              onChange={(e) => settitle(e.target.value)}
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="success" type="submit" onClick={closeHostelPopup}>
-              Submit
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
-      <Footer/>
-    </div>
-  );
-  return <Error/>
+    );
+  }
+  return <Error />;
 };
 
 export default AdminDashboard;

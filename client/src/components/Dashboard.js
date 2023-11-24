@@ -21,6 +21,7 @@ const Dashboard = () => {
   const allComplaints = useSelector((state) => state.complaints.complaints);
 
   console.log(allComplaints);
+  console.log(myComplaints);
 
   const dispatch = useDispatch();
 
@@ -34,6 +35,8 @@ const Dashboard = () => {
 
   const openMenu = () => setShowMenu(true);
   const closeMenu = () => setShowMenu(false);
+
+
 
   useEffect(() => {
     fetchComplaintData();

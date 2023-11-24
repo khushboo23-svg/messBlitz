@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   complaints: [],
-  myComplaints: [], // Make sure myComplaints is initialized as an array
+  myComplaints: [], 
 };
 
 const complaintSlice = createSlice({
@@ -19,6 +19,7 @@ const complaintSlice = createSlice({
       }
     },
     get_all_complaints: (state, action) => {
+      console.log(action.payload);
       state.complaints = action.payload;
     },
     get_my_complaints: (state, action) => {

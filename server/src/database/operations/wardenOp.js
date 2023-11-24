@@ -38,8 +38,7 @@ const createWarden = async function(data){
         name: data.name,
         email:data.email,
         password,
-        recoveryEmail: data.recoveryEmail,
-        appointedBy: data.appointedBy
+        recoveryEmail: data.recoveryEmail
     })
     let response;
     await warden.save().then(()=>{
@@ -47,9 +46,9 @@ const createWarden = async function(data){
     }).catch((err)=>{
         response = {status: 400, message:"some kind of error"+err};
     })
+    console.log(response)
     return response;
 }
-
 const getWardenById = async function(_id){
     return await WardenSchema.findById(_id);
 }

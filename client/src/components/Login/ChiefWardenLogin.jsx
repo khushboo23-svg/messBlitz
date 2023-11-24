@@ -9,6 +9,7 @@ import axios from "axios";
 import { redirect_to_dashboard,logout, get_chiefWarden_data } from "../../redux/chiefWardenSlice";
 import Error from "../Error";
 import Footer from "../Footer";
+import { get_hostels_data } from "../../redux/hostelSlice";
 
 
 function ChiefWardenLogin() {
@@ -32,18 +33,34 @@ function ChiefWardenLogin() {
       password,
     })
       .then((res) => {
+        console.log(res);
         const token = res.data.data.token;
         console.log("Token is : "+token);
         localStorage.setItem('token', token);
         console.log(res.data);
         axios.defaults.headers.common['Authorization'] = `${token}`;
-        dispatch(redirect_to_dashboard({
-          email : email,
-          password : password,
-          token : token,
-        })); 
-        dispatch(get_chiefWarden_data({email : email,password : password}));
-        navigate("/admindashboard");
+
+
+        axios.get("http://localhost:5500/chiefWarden/dashboard")
+        .then((response)=> {
+          console.log(response.data);
+          if(response.data.status===200){
+            console.log(response);
+            dispatch(redirect_to_dashboard({
+              email : email,
+              password : password,
+              token : token,
+            })); 
+            dispatch(get_hostels_data(response.data));
+            dispatch(get_chiefWarden_data({email : email,password : password}));
+            navigate("/admindashboard");
+          }else console.log("Error fetching chiefwarden dashboard data");
+          
+        })
+        .catch((error)=> {
+          console.log(error);
+        })
+        
       })
       .catch((err) => {
         if (

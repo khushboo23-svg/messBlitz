@@ -7,6 +7,7 @@ import styled, { keyframes } from 'styled-components';
 import "../css/Complaintcard.css";
 
 
+
 // Apply the animation to the CardContainer
 const CardContainer = styled.div`
   background-color: transparent;
