@@ -11,8 +11,8 @@ const hostelSlice = createSlice({
         state.hostels.push(action.payload)
     },
     get_hostels_data: (state,action) => {
-        state.hostels = action.payload
-        console.log(action.payload);
+        state.hostels = action.payload.hostels
+        console.log(action.payload.hostels);
     }
   },
 });

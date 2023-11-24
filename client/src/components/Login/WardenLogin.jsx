@@ -29,11 +29,21 @@ function ChiefWardenLogin() {
       password,
     })
       .then((res) => {
-        console.log(res);
-        const token = res.data.data.token;
-        console.log("Token is : "+token);
-        localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `${token}`;
+
+        if(res.data.status===200){
+          console.log(res);
+          const token = res.data.data.token;
+          console.log("Token is : "+token);
+          localStorage.setItem('token', token);
+          axios.defaults.headers.common['Authorization'] = `${token}`;
+          dispatch(redirect_to_dashboard({
+            email : email,
+            token: token
+          }));
+        }
+        
+        
+
 
         navigate("/warden");
       })
