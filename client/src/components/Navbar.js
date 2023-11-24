@@ -38,7 +38,7 @@ const Navbar = () => {
             </h2>
           </div>
           <div className="nav-links p-2 text-light">
-            {(location.pathname === '/dashboard') ? (
+            {(location.pathname === '/dashboard' ) ? (
               // If on the dashboard, show Logout tab
               <button className="text-light" style={logoutStyle} onClick={handleLogout}>
                 Logout

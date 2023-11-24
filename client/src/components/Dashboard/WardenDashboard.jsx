@@ -14,6 +14,7 @@ import Complaintcard from '../Complaintcard';
 
 const WardenDashboard = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [updateMenu, setUpdateMenu] = useState(false);
   const wardenData = useSelector((state) => state.students);
   const [showMyComplaints, setShowMyComplaints] = useState(true);
   const myComplaints = useSelector((state) => state.complaints.myComplaints);
@@ -53,7 +54,6 @@ const WardenDashboard = () => {
       // toast.success('complaint added successfully')
       dispatch(add_complaint(res.data));
       
-      // console.log(res);
     })
     .catch((err)=>{
       console.log(err);
@@ -88,6 +88,9 @@ const WardenDashboard = () => {
   const openMenu = () => setShowMenu(true);
   const closeMenu = () => setShowMenu(false);
 
+  const openUpdateMenu = () => setUpdateMenu(true);
+  const closeUpdateMenu = () => setUpdateMenu(false);
+
   return (
     <div style={pageStyle}>
       {/* <Navbar /> */}
@@ -111,6 +114,7 @@ const WardenDashboard = () => {
             <div className="col-md-6 p-2 m-2">
                 <button className='btn btn-primary m-1' onClick={() => setShowMyComplaints(true)}>All Complaints</button>
                 <button className='btn btn-primary m-1' onClick={openMenu}>View Mess Menu</button>
+                <button className='btn btn-primary m-1' onClick={openUpdateMenu}>Update Mess Menu</button>
             </div>
         </div>
       </div>
@@ -156,6 +160,17 @@ const WardenDashboard = () => {
         </Modal.Footer>
       </Modal>
 
+      <Modal show={updateMenu} onHide={closeUpdateMenu}>
+        <Modal.Header closeButton>
+          <Modal.Title className='text-center'>Update Mess Menu</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <label htmlFor="">Upload image of new mess menu</label> <br /> <br />
+            <input type="file" accept="image/*" onChange={(e) => setProofImage(e.target.files[0])} />
+        </Modal.Body>
+        <Modal.Footer>
+        </Modal.Footer>
+      </Modal>
       
     </div>
   );
