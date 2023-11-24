@@ -7,7 +7,7 @@ const authCW = async function(req, res,next){
             res.send({status: 400, message:"You are not authorized to do this"});
         }
         else{
-            req.body.cWid = _id;
+            req.cwid = _id;
             next()
         }
     }

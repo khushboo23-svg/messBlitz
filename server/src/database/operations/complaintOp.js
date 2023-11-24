@@ -128,7 +128,7 @@ const toggleLikeInComment = async function(data){
 }
 
 const getAllComplaintsWithStatusByHostelName = async function(data){
-    complaints= await getAllComplaints(data.hostelName);
+    complaints= await getComplaintsByHostelName(data.hostelName);
     let new_complaints = [];
     complaints.forEach((complaint)=>{
         if(complaint.upvoteId.includes(data._id)){
