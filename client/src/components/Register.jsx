@@ -29,7 +29,7 @@ function Register() {
     // Fetch hostel options from the API
     axios.get('http://localhost:5500/getAllHostels')
       .then(response => {
-        console.log(response);
+        console.log(response.data.data.hostels);
         setHostelOptions(response.data.data.hostels);
       })
       .catch(error => {

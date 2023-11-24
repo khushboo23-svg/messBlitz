@@ -38,7 +38,7 @@ function ChiefWardenLogin() {
         console.log("Token is : "+token);
         localStorage.setItem('token', token);
         console.log(res.data);
-        axios.defaults.headers.common['Authorization'] = `${token}`;
+        axios.defaults.headers.common['authorization'] = `${token}`;
 
 
         axios.get("http://localhost:5500/chiefWarden/dashboard")

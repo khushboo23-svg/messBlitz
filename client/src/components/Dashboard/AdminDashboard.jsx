@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { add_complaint } from "../../redux/complaintSlice";
+
 import axios from "axios";
 import Error from "../Error";
 import Footer from "../Footer";
 import defaultProfilePic from "../../images/user.png";
-import chiefWardenSlice from "../../redux/chiefWardenSlice";
+
 import { toast } from "react-toastify";
 import { create_warden } from "../../redux/wardenSlice";
-import { get_all_complaints } from "../../redux/complaintSlice";
+
+import { get_unassigned_wardens } from "../../redux/wardenSlice";
 import { get_hostels_data } from "../../redux/hostelSlice";
+
 
 
 const AdminDashboard = () => {
@@ -22,11 +24,14 @@ const AdminDashboard = () => {
   const [hostelsClicked, setHostelsClicked] = useState(true);
   const [selectedHostel, setSelectedHostel] = useState(null);
 
-  const studentData = useSelector((state) => state.students);
+  const studentData = useSelector((state) => state);
   console.log(studentData);
 
+  const allHostelData = useSelector((state)=> state.hostels.hostels);
+  // console.log(allHostelData);
+
   const [wardenName, setWardenName] = useState();
-  const [wardenEmail, setWardenEmail] = useState();
+  const [wardenEmail, setWardenEmail] = useState('');
   const [wardenRecoveryEmail, setWardenRecoveryEmail] = useState();
 
   const [hostelWardenEmail, setHostelWardenEmail] = useState();
@@ -35,6 +40,114 @@ const AdminDashboard = () => {
   const chiefWardenData = useSelector((state) => state.chiefwardens);
   const chiefWardenEmail = chiefWardenData.email;
   const chiefWardenPassword = chiefWardenData.password;
+  const [complaintsPopUp,setcomplaintsPopUp] = useState(false);
+
+
+
+
+
+  const [wardenOptions, setWardonOptions] = useState([]);
+
+
+
+
+
+  const [showComplaintsModal, setShowComplaintsModal] = useState(false);
+
+  const complaintsDisplayFunc = () => {
+    setShowComplaintsModal(true);
+    // Additional logic for fetching and displaying complaints can be added here
+    
+  };
+
+  const closeModal = () => {
+    setShowComplaintsModal(false);
+  };
+
+
+  const getComplaintByHostelName  = () => {
+    axios.post("http://localhost:5500/chiefWarden/getComplaints",{hostelName : "KNGH"})
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((error)=> {
+      console.log(error);
+    })
+  }
+
+  console.log(localStorage.getItem('token'));
+
+
+
+
+
+
+
+
+  // useEffect(() => {
+  //   fetchUnassignedWarden();
+  //   const intervalId = setInterval(fetchUnassignedWarden, 1000);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
+
+
+  useEffect(() => {
+    // Fetch hostel options from the API
+    axios.get('localhost:5500/warden/dashboard')
+      .then(response => {
+        console.log(response.data);
+        // setWardonOptions(response.data.wardens);
+      })
+      .catch(error => {
+        console.error('Error fetching hostel options:', error);
+        toast.error("Error fetching hostel options");
+      });
+  }, []);
+  const handleWardenChange = (e) => {
+    setHostelWardenEmail(e.target.value);
+  };
+
+
+  console.log(wardenOptions);
+  // console.log(wardenOptions.wardens.map(item => item.email));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+ 
+
+
+
+
+  
+
+  
+
+
+ 
+
+  
 
 
   const complaints = useSelector((state)=> 
@@ -42,27 +155,29 @@ const AdminDashboard = () => {
   )
   console.log(complaints);
 
-  const openUnassignedWardens = () => {
-    setUnassignedWardensClicked(true);
-    setHostelsClicked(false);
-  };
+  // const openUnassignedWardens = () => {
+  //   setUnassignedWardensClicked(true);
+  //   setHostelsClicked(false);
+  // };
 
   const openHostels = () => {
     setHostelsClicked(true);
     setUnassignedWardensClicked(false);
   };
 
-  const toggleComplaintsVisibility = (hostelName) => {
-    setSelectedHostel(selectedHostel === hostelName ? null : hostelName);
-  };
+  
 
-  const ComplaintCard = ({ complaintText }) => (
-    <div className="card">
-      <div className="card-body">
-        {complaintText}
-      </div>
-    </div>
-  );
+  // const toggleComplaintsVisibility = (hostelName) => {
+  //   setSelectedHostel(selectedHostel === hostelName ? null : hostelName);
+  // };
+
+  // const ComplaintCard = ({ complaintText }) => (
+  //   <div className="card">
+  //     <div className="card-body">
+  //       {complaintText}
+  //     </div>
+  //   </div>
+  // );
 
   const registerWarden = (e) => {
     e.preventDefault();
@@ -93,7 +208,7 @@ const AdminDashboard = () => {
     setshowHostelPopup(false);
     axios.post("http://localhost:5500/chiefWarden/registerHostel", {
       hostelName,
-      warden: hostelWardenEmail,
+      warden: wardenEmail,
       messMenu: "demo",
     }).then((res) => {
       console.log("hostel registered successfully");
@@ -115,52 +230,21 @@ const AdminDashboard = () => {
     objectFit: "cover",
   };
 
-  const HostelRow = ({ hostelName, wardenName }) => (
-    <>
-      <div className="hostel-row row my-3 ">
-        <div className="hostel-name col-5">{hostelName}</div>
-        <div className="warden-name col-5">{wardenName}</div>
-        <button className="btn btn-success col-2 " onClick={() => toggleComplaintsVisibility(hostelName)}>
-          View Complaints
-        </button>
-      </div>
-      <hr />
-      {selectedHostel === hostelName && (
-        <div className="mt-3">
-          <ComplaintCard complaintText="Dummy Complaint 1" />
-          <ComplaintCard complaintText="Dummy Complaint 2" />
-          {/* Add more ComplaintCard components as needed */}
-        </div>
-      )}
-    </>
-  );
+  
+  
+  
 
-  const hostelsData = [
-    { hostelName: "Hostel A", wardenName: "Warden 1" },
-    { hostelName: "Hostel B", wardenName: "Warden 2" },
-    { hostelName: "Hostel C", wardenName: "Warden 3" },
-  ];
-
-  const [title, settitle] = useState("");
-  const studentName = studentData.name;
+  
+  // const [title, settitle] = useState("");
+  // const studentName = studentData.name;
   const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+  // const toggleVisibility = () => {
+  //   setIsVisible(!isVisible);
+  // };
 
   const dispatch = useDispatch();
 
-  // const handleComplaint = (e) => {
-  //   e.preventDefault();
-  //   axios.post("http://localhost:5500/student/addComplaint", {
-  //     title,
-  //     studentName,
-  //   }).then((res) => {
-  //     dispatch(add_complaint(res.data));
-  //   }).catch((err) => {
-  //     console.log(err);
-  //   });
-  // };
+  
 
   const pageStyle = {
     display: "flex",
@@ -191,9 +275,7 @@ const AdminDashboard = () => {
     paddingTop: "5px",
   };
 
-  useSelector((state) => {
-    console.log(state);
-  });
+  
 
   const authToken = localStorage.getItem('token');
   const isAuthenticatedChiefWarden = useSelector(
@@ -223,9 +305,6 @@ const AdminDashboard = () => {
               <button className="btn btn-primary m-1" onClick={openHostelPopup}>
                 Add Hostel
               </button>
-              <button className="btn btn-primary m-1" onClick={openUnassignedWardens}>
-                Unassigned Wardens
-              </button>
             </div>
           </div>
         </div>
@@ -236,18 +315,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {hostelsClicked && (
-          <div className="container mt-5">
-            {hostelsData.map((hostel, index) => (
-              <HostelRow
-                key={index}
-                hostelName={hostel.hostelName}
-                wardenName={hostel.wardenName}
-              />
-            ))}
-          </div>
-        )}
-
+        
         <div className="flex-grow-1"></div>
 
         <Modal show={showWardenPopup} onHide={closeWardenPopup}>
@@ -292,13 +360,34 @@ const AdminDashboard = () => {
               <Modal.Title>Add New Hostel</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <input
+              {/* <input
                 type="email"
                 placeholder="Warden-Email"
                 style={inputStyle}
                 required
                 onChange={(e) => setHostelWardenEmail(e.target.value)}
-              />
+              /> */}
+
+              
+
+
+              {/* {wardenOptions.wardens.length >= 1 && (
+  <select
+    value={wardenEmail}
+    onChange={handleWardenChange}
+  >
+    <option value="" disabled className="text-dark">
+      Select Available Warden
+    </option>
+    {wardenOptions.wardens.map((item) => (
+      <option key={item._id} value={item.email} className="text-dark">
+        {item.email}
+      </option>
+    ))}
+  </select>
+)} */}
+
+
 
               <input
                 type="text"
@@ -315,7 +404,6 @@ const AdminDashboard = () => {
             </Modal.Footer>
           </form>
         </Modal>
-
         <Footer />
       </div>
     );

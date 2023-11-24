@@ -14,10 +14,14 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useSelector((state)=>{
-    // console.log(state);
+    console.log(state);
   })
+
+  const wToken = useSelector((state)=> state.wardens);
+  console.log(wToken);
   const isAuthenticatedStudent = useSelector((state) => state.students.token !== null);
   const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
+  const isAuthenticatedWarden = useSelector((state) => state.wardens.token !== null);
   const location = useLocation();
 
   const handleLogout = () => {
@@ -61,7 +65,7 @@ const Navbar = () => {
             </h2>
           </div>
           <div className="nav-links p-2 text-light">
-            {((location.pathname === '/dashboard' && isAuthenticatedStudent) || (location.pathname ==='/admindashboard' && isAuthenticatedChiefWarden)) ? (
+            {((location.pathname === '/dashboard' && isAuthenticatedStudent) || (location.pathname ==='/admindashboard' && isAuthenticatedChiefWarden) || (location.pathname==='/warden') && isAuthenticatedWarden) ? (
               // If on the dashboard, show Logout tab
               <button className="text-light" style={logoutStyle} onClick={handleLogout}>
                 Logout
