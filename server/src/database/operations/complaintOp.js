@@ -56,6 +56,9 @@ const createComplaint = async function(data){
     return response;
 }
 
+
+
+
 const deleteComplaintbyId = async function(_id){
     let response;
     await ComplaintSchema.findOneAndDelete({_id: _id}).then(()=>{

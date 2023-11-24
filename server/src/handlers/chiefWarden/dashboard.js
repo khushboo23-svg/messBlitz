@@ -7,13 +7,13 @@ const { getStudentbyId } = require('../../database/operations/studentOp');
 const registerWarden = async (req,res)=>{
     const {name, email, recoveryEmail} = req.body
     if((await isValidWardenRecoveryEmail(recoveryEmail))||(await isValidWardenEmail(email))){
-        res.send({status:200, message: "Unique fields already exist"});
+        res.send({status:400, message: "Unique fields already exist"});
     }
     else{
-        res.send(await createWarden({name,email,recoveryEmail,appointedBy: req.body.cWid}));
+        console.log("hi")
+        res.send(await createWarden({name,email,recoveryEmail}));
     }
 }
-
 const getUnassignedWardens = async function(req, res){
     try{
         let wardens = await getAllUnassginedWarden();
