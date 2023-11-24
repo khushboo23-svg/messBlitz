@@ -17,10 +17,6 @@ const wardenSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    appointedBy: {
-        type: mongoose.Types.ObjectId,
-        ref: 'schemaChiefWarden'
-    },
     profileImg: {
         type: String,
         required: false

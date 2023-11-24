@@ -23,6 +23,6 @@ const schemaChiefWarden = new mongoose.Schema({
     }
 }, {timestamps: true})
 
-const ChiefWardenSchema = mongoose.model('schemaChiefWarden',schemaChiefWarden);
+const ChiefWardenSchema = mongoose.model('chiefWardenSchema',schemaChiefWarden);
 
 module.exports = ChiefWardenSchema

@@ -8,6 +8,22 @@ const isValidWardenEmail = async function(email){
         return false
 }
 
+const isValidWardenId = async function(id){
+    let existingWarden = await WardenSchema.findById(id);
+    if(existingWarden)
+        return true
+    else
+        return false
+}
+
+const isValidWarden = async function(data){
+    let existingWarden = await WardenSchema.findOne({email: data.email});
+    if(existingWarden && existingWarden.password == data.password)
+        return true
+    else
+        return false
+}
+
 const isValidWardenRecoveryEmail = async function(recoveryEmail){
     let existingWarden = await WardenSchema.findOne({recoveryEmail: recoveryEmail});
     if(existingWarden)
@@ -34,4 +50,25 @@ const createWarden = async function(data){
     return response;
 }
 
-module.exports = {createWarden, isValidWardenEmail, isValidWardenRecoveryEmail}
+const getWardenById = async function(_id){
+    return await WardenSchema.findById(_id);
+}
+
+const getAllUnassginedWarden = async function(){
+    let wardens = await WardenSchema.find({});
+    // console.log(typeof: )
+    let unassignedWardens = wardens.filter((warden)=>((typeof warden.hostelName) === "undefined"));
+    return unassignedWardens;
+}
+
+const getWardenByEmail = async function(email){
+    return await WardenSchema.findOne({email: email});
+}
+
+const addHostelToWarden = async function(data){
+    const warden = await WardenSchema.findOne({email: data.email});
+    warden.hostelName = data.hostelName;
+    await warden.save();
+}
+
+module.exports = {getAllUnassginedWarden, addHostelToWarden, isValidWardenId, isValidWarden, createWarden, isValidWardenEmail, isValidWardenRecoveryEmail, getWardenById, getWardenByEmail, isValidWarden}

@@ -7,7 +7,7 @@ const studentDashboard = async function(req,res,next){
         let complaints = await getAllComplaintsWithStatusByHostelName({hostelName: student.hostelName, _id: req.sid});
         let processedComplaint = [];
         for (let complaint of complaints) {
-            let complaintStudent=await getStudentbyId(req.sid)
+            let complaintStudent=await getStudentbyId(complaint.studentId)
             processedComplaint.push({...complaint, studentName:complaintStudent.name, studentRegNo:complaintStudent.regNo});
         }
         res.send({
