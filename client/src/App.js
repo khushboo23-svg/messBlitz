@@ -11,6 +11,7 @@ import StudentLogin from './components/Login/StudentLogin';
 import Register from './components/Register';
 import AdminDashboard from './components/Dashboard/AdminDashboard';
 import WardenDashboard from './components/Dashboard/WardenDashboard';
+import Accountant from './components/Dashboard/Accountant';
 import Error from './components/Error';
 import Contributors from './components/Contributors';
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admindashboard" element={<AdminDashboard/>} />
             <Route path="/warden" element={<WardenDashboard/>} />
+            <Route path="/accountant" element={<Accountant/>} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/student" element={<StudentLogin />} />
             <Route path="/register" element={<Register />} />
