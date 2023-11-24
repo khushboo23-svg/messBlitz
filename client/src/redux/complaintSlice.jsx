@@ -13,8 +13,7 @@ const complaintSlice = createSlice({
   reducers: {
     add_complaint: (state, action) => {
       state.complaints.push(action.payload);
-      console.log(action.payload);
-
+      console.log(state.complaints.complaints);
       if (action.payload.studentName === state.myComplaints) {
         state.myComplaints.push(action.payload);
       }

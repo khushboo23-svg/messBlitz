@@ -5,9 +5,7 @@ import {  useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/studentSlice';
 // import { logout } from '../redux/chiefWardenSlice';
 import axios from 'axios';
-import studentSlice from '../redux/studentSlice';
-import wardenSlice from '../redux/wardenSlice';
-import chiefWardenSlice from '../redux/chiefWardenSlice';
+
 
 
 
@@ -42,6 +40,16 @@ const Navbar = () => {
     
   };
 
+  const [isHovered, setIsHovered] = React.useState(null);
+
+  const handleMouseEnter = (link) => {
+    setIsHovered(link);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(null);
+  };
+
   return (
     <>
       <div style={displayNavbar}>
@@ -61,12 +69,50 @@ const Navbar = () => {
             ) : (
               // If not authenticated or not on the dashboard, show Home, Register, and Login tabs
               <>
-                <Link to="/" style={linkStyle}>
+                {/* <Link to="/" style={linkStyle}>
                   Home
+                </Link>
+                <Link to="/contributors" style={linkStyle}>
+                  Contributors
                 </Link>
                 <Link to="/register" style={linkStyle}>
                   Register
-                </Link>
+                </Link> */}
+
+                <Link
+        to="/"
+        style={{
+          ...linkStyle,
+          color: isHovered === '/' ? linkStyle.hover.color : linkStyle.color,
+        }}
+        onMouseEnter={() => handleMouseEnter('/')}
+        onMouseLeave={handleMouseLeave}
+      >
+        Home
+      </Link>
+      <Link
+        to="/contributors"
+        style={{
+          ...linkStyle,
+          color: isHovered === '/contributors' ? linkStyle.hover.color : linkStyle.color,
+        }}
+        onMouseEnter={() => handleMouseEnter('/contributors')}
+        onMouseLeave={handleMouseLeave}
+      >
+        Contributors
+      </Link>
+      <Link
+        to="/register"
+        style={{
+          ...linkStyle,
+          color: isHovered === '/register' ? linkStyle.hover.color : linkStyle.color,
+        }}
+        onMouseEnter={() => handleMouseEnter('/register')}
+        onMouseLeave={handleMouseLeave}
+      >
+        Register
+      </Link>
+                
                 <select
                   style={selectStyle}
                   onChange={(e) => (window.location.href = e.target.value)}
@@ -109,11 +155,16 @@ const navbarStyle = {
   padding: '10px 20px',
 };
 
+
 const linkStyle = {
   textDecoration: 'none',
   color: 'white',
   fontSize: '18px',
   padding: '10px',
+
+  hover: {
+    color : 'skyblue'
+  },
 };
 
 const selectStyle = {

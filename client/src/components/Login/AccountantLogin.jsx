@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 // import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../Footer";
 
 function AccountantLogin() {
     
@@ -47,7 +48,7 @@ function AccountantLogin() {
         <form onSubmit={(event) => handleSubmit(event)} >
           <div className="brand">
             {/* <img src={Logo} alt="logo" /> */}
-            <h3>Accountant LOGIN</h3>
+            <h3 style={{color : "skyblue"}}>Accountant LOGIN</h3>
           </div>
           <input
             type="text"
@@ -66,7 +67,7 @@ function AccountantLogin() {
         <div>
         </div>
       </FormContainer>  
-      
+      <Footer/>
       <ToastContainer />
     </>
   )
@@ -110,7 +111,7 @@ const FormContainer = styled.div`
     input{
       background-color: transparent;
       padding: 1rem;
-      border: 0.1rem solid yellow;
+      border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;

@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { redirect_to_dashboard,logout } from "../../redux/wardenSlice";
-
+import Footer from "../Footer";
 
 function ChiefWardenLogin() {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ function ChiefWardenLogin() {
          <FormContainer>
           <form onSubmit={handleLogin}>
             <div className="brand">
-              <h3>WARDEN LOGIN</h3>
+              <h3 style={{color : "skyblue"}}>WARDEN LOGIN</h3>
             </div>
             <input
               type="text"
@@ -80,6 +80,8 @@ function ChiefWardenLogin() {
         
       </FormContainer>
       <ToastContainer />
+      <Footer/>
+      
     </>
   )
 }
@@ -122,7 +124,7 @@ const FormContainer = styled.div`
     input{
       background-color: transparent;
       padding: 1rem;
-      border: 0.1rem solid yellow;
+      border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;

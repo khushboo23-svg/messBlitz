@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { register_student } from "../redux/studentSlice";
+import Footer from "./Footer";
 
 function Register() {
   const [name, setName] = useState('');
@@ -96,7 +97,7 @@ function Register() {
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
-            <h3>STUDENT REGISTER</h3>
+            <h3 style={{color : "white"}}>STUDENT REGISTER</h3>
           </div>
           <input
             type="text"
@@ -115,9 +116,9 @@ function Register() {
             value={hostelName}
             onChange={handleHostelChange}
           >
-            <option value="" disabled>Select Hostel</option>
+            <option value="" disabled className="text-dark">Select Hostel</option>
             {hostelOptions.map(hostel => (
-              <option key={hostel._id} value={hostel.hostelName}>
+              <option key={hostel._id} value={hostel.hostelName} className="text-dark">
                 {hostel.hostelName}
               </option>
             ))}
@@ -159,6 +160,7 @@ function Register() {
           </span>
         </form>
       </FormContainer>
+      <Footer/>
       <ToastContainer />
     </>
   );
@@ -199,7 +201,7 @@ const FormContainer = styled.div`
     select {
       background-color: transparent;
       padding: 1rem;
-      border: 0.1rem solid yellow;
+      border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;

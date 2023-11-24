@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import Complaintcard from "./Complaintcard";
 import Error from "./Error";
 import { redirect_to_dashboard } from "../redux/studentSlice";
+import menu from "../images/menu.png"
+import Footer from "./Footer";
 
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +19,8 @@ const Dashboard = () => {
 
   const myComplaints = useSelector((state) => state.complaints.myComplaints);
   const allComplaints = useSelector((state) => state.complaints.complaints);
+
+  console.log(allComplaints);
 
   const dispatch = useDispatch();
 
@@ -50,6 +54,7 @@ const Dashboard = () => {
       .get("http://localhost:5500/student/dashboard")
       .then((response) => {
         // console.log(response);
+        
         if (response.data.status === 200) {
           const studentData = response.data.data;
           // console.log(studentData.name,studentData.email,studentData.regNo,studentData.hostelName);
@@ -85,6 +90,7 @@ const Dashboard = () => {
       });
   };
 
+
   const handleComplaint = (e) => {
     e.preventDefault();
     axios
@@ -95,7 +101,8 @@ const Dashboard = () => {
         studentName,
       })
       .then((res) => {
-        dispatch(add_complaint(res.data));
+        console.log(res.data);
+        dispatch(add_complaint(res.data.data));
         toast.success("success");
       })
       .catch((err) => {
@@ -117,7 +124,7 @@ const Dashboard = () => {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: "20px",
     borderRadius: "10px",
-    border: "2px solid rgba(255, 255, 255, 0.3)",
+    // border: "2px solid rgba(255, 255, 255, 0.3)",
   };
 
   const profilePicStyle = {
@@ -153,7 +160,7 @@ const Dashboard = () => {
     if(localStorage.getItem('token')!==null && isAuthenticatedStudent)
     return (
       <div style={pageStyle}>
-        <div className="container mt-5" style={heading}>
+        <div className="container mt-3 shadow-lg" style={heading}>
           <div className="row">
             <div className="col-md-6">
               <span style={{ fontSize: "30px" }}>
@@ -203,7 +210,7 @@ const Dashboard = () => {
                 style={{ bottom: "180px", right: "20px" }}
                 onClick={openModal}
               >
-                Add complaint
+                Add Complaint
               </button>
             </div>
           </div>
@@ -244,50 +251,64 @@ const Dashboard = () => {
 
         <div className="flex-grow-1"></div>
 
+        
         <Modal show={showModal} onHide={closeModal}>
-          <form onSubmit={handleComplaint}>
-            <Modal.Header closeButton>
-              <Modal.Title>Add new complaint</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <input
-                type="text"
-                placeholder="title"
-                style={inputStyle}
-                required
-                onChange={(e) => settitle(e.target.value)}
-              />
-              <textarea
-                type="text"
-                placeholder="Description"
-                style={inputStyle}
-                required
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              <label htmlFor="">Upload image if any</label> <br /> <br />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setProofImage(e.target.files[0])}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="success" type="submit" onClick={closeModal}>
-                Submit
-              </Button>
-            </Modal.Footer>
-          </form>
-        </Modal>
+  <form onSubmit={handleComplaint}>
+    <Modal.Header closeButton style={{ backgroundColor: '#3498db', color: 'white' }}>
+      <Modal.Title style={{ textAlign: 'center', fontSize: '20px' }}>Add new complaint</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <label style={{ display: 'block', marginBottom: '10px' }}>Title:</label>
+      <input
+        type="text"
+        placeholder="Title"
+        style={{ width: '100%', padding: '8px', marginBottom: '15px', borderRadius: '5px', border: '1px solid #ddd' }}
+        required
+        onChange={(e) => settitle(e.target.value)}
+      />
 
-        <Modal show={showMenu} onHide={closeMenu}>
-          <Modal.Header closeButton>
-            <Modal.Title className="text-center">Mess Menu</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>Image uploaded for the mess menu will be displayed here </p>
-          </Modal.Body>
-          <Modal.Footer></Modal.Footer>
-        </Modal>
+      <label style={{ display: 'block', marginBottom: '10px' }}>Description:</label>
+      <textarea
+        type="text"
+        placeholder="Description"
+        style={{ width: '100%', padding: '8px', marginBottom: '15px', borderRadius: '5px', border: '1px solid #ddd' }}
+        required
+        onChange={(e) => setDescription(e.target.value)}
+      />
+
+      <label htmlFor="imageUpload" style={{ display: 'block', marginBottom: '10px' }}>Upload image if any:</label>
+      <input
+        type="file"
+        id="imageUpload"
+        accept="image/*"
+        style={{ marginBottom: '15px' }}
+        onChange={(e) => setProofImage(e.target.files[0])}
+      />
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="success" type="submit" onClick={closeModal} style={{ borderRadius: '5px' }}>
+        Submit
+      </Button>
+    </Modal.Footer>
+  </form>
+</Modal>
+
+
+
+        <Modal show={showMenu} onHide={closeMenu} size="lg" >
+  <Modal.Header closeButton style={{ backgroundColor: '#3498db', color: 'white' }}>
+    <Modal.Title className="text-center" style={{ fontSize: '20px' }}>Mess Menu</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <p style={{ marginBottom: '15px', fontSize: '16px' }}>Mess Menu for {studentData.hostelName} Hostel</p>
+    <img src={menu} alt="Hostel Image" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }} />
+  </Modal.Body>
+  <Modal.Footer>
+    
+  </Modal.Footer>
+</Modal>
+<Footer/>
+
       </div>
     );
     return <Error/>

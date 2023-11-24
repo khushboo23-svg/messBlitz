@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { redirect_to_dashboard, logout } from '../../redux/studentSlice';
 import { get_all_complaints, get_my_complaints } from '../../redux/complaintSlice';
+import Footer from '../Footer';
 
 const StudentLogin = () => {
   const dispatch = useDispatch();
@@ -91,14 +92,10 @@ const StudentLogin = () => {
   return (
     <>
       <FormContainer>
-        {isAuthenticated ? (
-          <form onSubmit={handleLogout}>
-            <button type="submit" onClick={handleLogout}>Logout</button>
-          </form>
-        ) : (
+        
           <form onSubmit={handleLogin}>
             <div className="brand">
-              <h3>STUDENT LOGIN</h3>
+              <h3 style={{color : "skyblue"}}>STUDENT LOGIN</h3>
             </div>
             <input
               type="text"
@@ -117,8 +114,9 @@ const StudentLogin = () => {
               Don't have an account? <Link to="/register">Register</Link>
             </span>
           </form>
-        )}
+       
       </FormContainer>
+      <Footer/>
       <ToastContainer />
     </>
   );
@@ -156,7 +154,7 @@ const FormContainer = styled.div`
     input {
       background-color: transparent;
       padding: 1rem;
-      border: 0.1rem solid yellow;
+      border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;

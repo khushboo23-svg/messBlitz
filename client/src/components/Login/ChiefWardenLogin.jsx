@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { redirect_to_dashboard,logout } from "../../redux/chiefWardenSlice";
 import Error from "../Error";
+import Footer from "../Footer";
 
 
 function ChiefWardenLogin() {
@@ -69,7 +70,7 @@ function ChiefWardenLogin() {
          <FormContainer>
           <form onSubmit={handleLogin}>
             <div className="brand">
-              <h3>CHIEF WARDEN LOGIN</h3>
+              <h3 style={{color : "skyblue"}}>CHIEF WARDEN LOGIN</h3>
             </div>
             <input
               type="text"
@@ -86,6 +87,7 @@ function ChiefWardenLogin() {
             <button type="submit">Login</button>
           </form>
       </FormContainer>
+      <Footer/>
       <ToastContainer />
     </>
   )
@@ -130,7 +132,7 @@ const FormContainer = styled.div`
     input{
       background-color: transparent;
       padding: 1rem;
-      border: 0.1rem solid yellow;
+      border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;
