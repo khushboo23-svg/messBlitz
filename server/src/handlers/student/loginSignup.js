@@ -17,8 +17,9 @@ const registerStudent = async (req,res)=>{
 
 const loginStudent = async (req,res)=>{
     const {email, password} = req.body
+    console.log(req.body)
     let student = await isValidStudent({email, password});
-    // console.log(student)
+    console.log(student)
     if(student){
         // console.log(process.env.SECRET_KEY)
         const token = jwt.sign({_id: student._id}, process.env.SECRET_KEY,{

@@ -32,6 +32,10 @@ const studentSchema = new mongoose.Schema({
     profileImg: {
         type: String,
         required: false
+    },
+    verified: {
+        type: Boolean,
+        required: true
     }
 }, {timestamps: true})
 

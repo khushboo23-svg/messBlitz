@@ -6,11 +6,12 @@ const { getAllHostels } = require('../handlers/hostelQuery');
 const { studentDashboard, addComplaint, deleteComplaint, addComment, deleteComment, toggleLike, upvote, downvote } = require('../handlers/student/dashboard');
 const { authCW } = require('../auth/authChiefWarden');
 const { loginChiefWarden, registerChiefWarden } = require('../handlers/chiefWarden/loginSignup');
-const authS = require('../auth/authStudent');
+const {authS, authSL} = require('../auth/authStudent');
 const { getStudentDetailById } = require('../handlers/studentQuery');
 const { wardenDashboard } = require('../handlers/warden/dashboard');
 const { loginWarden } = require('../handlers/warden/loginSignup');
 const { authW } = require('../auth/authWarden');
+const { verify, verifyLink } = require('../handlers/student/verification');
 
 
 rootRoute.post('/registerStudent', registerStudent);
@@ -59,6 +60,8 @@ rootRoute.get('/chiefWarden/getWarden', authCW, getUnassignedWardens)
 
 rootRoute.post('/chiefWarden/getComplaints', authCW, getComplaintForHostel)
 
+rootRoute.get('/student/verify', authSL, verify);
 
+rootRoute.get('/verifyLink', verifyLink);
 
 module.exports = rootRoute

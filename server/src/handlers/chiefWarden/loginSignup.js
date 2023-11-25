@@ -16,7 +16,7 @@ const registerChiefWarden = async (req,res)=>{
 const loginChiefWarden = async function(req,res){
     const {email, password} = req.body;
     let data = {email, password}
-    let response = isValidChiefWarden(data);
+    let response = await isValidChiefWarden(data);
     if(response){
         const token = jwt.sign({_id: response._id}, process.env.SECRET_KEY)
         res.send({status:200,

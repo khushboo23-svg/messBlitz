@@ -40,7 +40,8 @@ const createStudent = async function(data){
         password: data.password,
         recoveryEmail: data.recoveryEmail,
         hostelName: data.hostelName,
-        roomNo: data.roomNo
+        roomNo: data.roomNo,
+        verified: false
     })
     let response;
     await student.save().then(()=>{
@@ -60,6 +61,24 @@ const isValidStudent = async function(data){
     }
     else{
         return null;
+    }
+}
+
+const verifyStudent = async function(id){
+    let existingStudent = await StudentSchema.findById(id);
+    if(existingStudent){
+        existingStudent.verified=true;
+        await existingStudent.save();
+    }
+}
+
+const isVerifiedStudentId = async function(id){
+    let existingStudent = await StudentSchema.findOne({_id: id})
+    if(existingStudent&&existingStudent.verified==true){
+        return true;
+    }
+    else{
+        return false;
     }
 }
 
@@ -86,4 +105,4 @@ const getStudentbyId = async function(_id){
 
 // const getStudentby
 
-module.exports = {isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId, isValidStudentId}
+module.exports = {verifyStudent, isVerifiedStudentId, isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId, isValidStudentId}
