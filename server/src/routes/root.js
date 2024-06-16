@@ -40,6 +40,10 @@ rootRoute.post('/logout',logout)
 
 // rootRoute.post('/chiefWarden/registerHostel', authCW, registerHostel)
 
+rootRoute.post('/createWarden',registerWarden)
+
+rootRoute.post('/warden/createHostel',authW,registerHostel);
+
 rootRoute.get('/getAllHostels', getAllHostels);
 
 rootRoute.get('/student/dashboard', authS, studentDashboard);
