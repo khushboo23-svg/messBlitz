@@ -1,11 +1,9 @@
 const express = require('express')
 const rootRoute = express.Router()
 const {loginStudent, logout, registerStudent} = require('../handlers/student/loginSignup');
-const { registerWarden, registerHostel, chiefWardeDashboard, getUnassignedWardens, getComplaintForHostel } = require('../handlers/chiefWarden/dashboard');
+const { registerWarden, registerHostel} = require('../handlers/chiefWarden/dashboard');
 const { getAllHostels, getHostelExpensePerPerson, getMessMenu, updateMessMenuWarden } = require('../handlers/hostelQuery');
 const { studentDashboard, addComplaint, deleteComplaint, addComment, deleteComment, toggleLike, upvote, downvote } = require('../handlers/student/dashboard');
-const { authCW } = require('../auth/authChiefWarden');
-const { loginChiefWarden, registerChiefWarden } = require('../handlers/chiefWarden/loginSignup');
 const {authS, authSL} = require('../auth/authStudent');
 const { getStudentDetailById } = require('../handlers/studentQuery');
 const { wardenDashboard, resolveComplaint, deleteComplaintW } = require('../handlers/warden/dashboard');
