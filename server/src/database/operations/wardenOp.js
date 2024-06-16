@@ -33,11 +33,10 @@ const isValidWardenRecoveryEmail = async function(recoveryEmail){
 }
 
 const createWarden = async function(data){
-    let password="admin";
     const warden = new WardenSchema({
         name: data.name,
         email:data.email,
-        password,
+        password: data.password,
         recoveryEmail: data.recoveryEmail
     })
     let response;
