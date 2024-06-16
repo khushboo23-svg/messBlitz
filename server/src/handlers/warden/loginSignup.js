@@ -10,7 +10,8 @@ const loginWarden = async function(req,res,next){
         res.send({status:200,
             data: {
                 message: "successfully logged in",
-                token: token
+                token: token,
+                warden: warden,
             }})
     }
     else

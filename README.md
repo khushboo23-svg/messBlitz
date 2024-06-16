@@ -1,2 +1,2 @@
-# messBlitz
-This is a mess management project
+# messControl
+This is a mess management web app

@@ -10,7 +10,7 @@ const registerWarden = async (req,res)=>{
         res.send({status:400, message: "Unique fields already exist"});
     }
     else{
-        console.log("hi")
+        // console.log("hi")
         res.send(await createWarden({name,email,recoveryEmail}));
     }
 }
@@ -74,7 +74,7 @@ const chiefWardeDashboard = async function(req, res){
 const getComplaintForHostel = async function(req, res){
     // try{
         let complaints= await getComplaintsByHostelName(req.body.hostelName);
-        console.log(complaints)
+        // console.log(complaints)
         let processedComplaint = [];
         for (let complaint of complaints) {
             let complaintStudent=await getStudentbyId(complaint.studentId)

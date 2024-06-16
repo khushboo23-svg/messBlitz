@@ -1,0 +1,199 @@
+/* .custom-h{
+    background-color: #ffffff!important;
+    padding: 50px;
+    border-radius: 10px;
+} */
+.com-card{
+  display: flex;
+  justify-content: space-between;
+}
+.warden-container{
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  justify-content: space-between;
+}
+.hostel_name{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 30px;
+}
+.card-title-txt{
+  color: aqua;
+  display: flex;
+  flex-direction: column;
+  padding-right: 2%;
+  justify-content: space-between;
+}
+.contributor_container{
+  height: 100vh;
+  background-color: rgb(0, 31, 63);
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.profile-pic-container {
+  position: relative;
+  width: fit-content;
+}
+
+.update-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+}
+.overlay-update-warden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  width:55px;
+  height: 55px;
+}
+
+.profile-pic-container:hover .overlay-update-warden {
+  opacity: 1;
+}
+.profile-pic-container:hover .update-overlay {
+  opacity: 1;
+}
+
+
+@media (max-width: 768px) {
+  .custom-left{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .custom-right p{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .hostel_name{
+    font-size: 21px;
+    display: flex;
+  flex-direction: column;
+  }
+  .ward-text{
+    font-size: 21px;
+  }
+  .profile-pic-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 575px) {
+    .custom-h{
+      width: 93%;
+    }
+  }
+}
+@media (max-width: 575px) {
+  Button,i{
+    font-size: small;
+  }
+  .rden-container{
+    width: 95%;
+  }
+  .warden-container{
+    width: 93%;
+  }
+}
+
+@media (max-width: 1291px) {
+  .card_changes{
+    flex: 0 0 auto;
+    width: 30%
+  }
+}
+
+@media (max-width: 1114px) {
+  .card_changes{
+    flex: 0 0 auto;
+    width: 32%
+  }
+}
+
+@media (max-width: 992px) {
+  .card_changes{
+    flex: 0 0 auto;
+    width: 34%
+  }
+
+  @media (max-width: 968px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width: 39%
+    }
+  }
+
+  @media (max-width: 816px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width: 45%
+    }
+  }
+  @media (max-width: 668px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width: 46%
+    }
+  }
+
+  @media (max-width: 602px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width:50%
+    }
+  }
+  @media (max-width: 611px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width:67%
+    }
+  }
+  @media (max-width: 415px) {
+    .card_changes{
+      flex: 0 0 auto;
+      width:100%
+    }
+  }
+}
+@media (max-width: 420px) {
+  .nav_changes{
+    /* height: ; */
+  }
+}
+
+
+
+

@@ -1,4 +1,5 @@
-const StudentSchema = require('../schema/schemaStudent')
+const StudentSchema = require('../schema/schemaStudent');
+const { increaseStudent } = require('./hostelOp');
 
 const isValidStudentEmail = async function(email){
     const existingStudent = await StudentSchema.findOne({email: email});
@@ -41,7 +42,9 @@ const createStudent = async function(data){
         recoveryEmail: data.recoveryEmail,
         hostelName: data.hostelName,
         roomNo: data.roomNo,
-        verified: false
+        verified: false,
+        feePaid: false,
+        feeAmount: 0
     })
     let response;
     await student.save().then(()=>{
@@ -49,6 +52,9 @@ const createStudent = async function(data){
     }).catch((err)=>{
         response =  {status: 400, message:"some kind of error"+err};
     })
+    if(response.status===200){
+        await increaseStudent(data.hostelName);
+    }
     return response;
 }
 
@@ -82,6 +88,15 @@ const isVerifiedStudentId = async function(id){
     }
 }
 
+const getStudentIdbyEmail = async function(email){
+    // console.log("hi")
+    let student = await StudentSchema.findOne({email: email});
+    if(student){
+        return student._id;
+    }
+    return null;
+}
+
 const getStudentbyId = async function(_id){
     let student = await StudentSchema.findOne({_id: _id});
     if(student){
@@ -91,7 +106,9 @@ const getStudentbyId = async function(_id){
             regNo: student.regNo,
             hostelName: student.hostelName,
             profileImg: student.profileImg,
-            roomNo: student.roomNo
+            roomNo: student.roomNo,
+            feePaid: student.feePaid,
+            feeAmount: student.feeAmount
         };
     }
     else{
@@ -99,10 +116,32 @@ const getStudentbyId = async function(_id){
     }
 }
 
+const getNoOfStudentByHostelName = async function(name){
+    let response = await StudentSchema.find({hostelName: name});
+    return response.length;
+}
+
+const changeFeePaidstatus = async function(id){
+    await StudentSchema.findOneAndUpdate({_id: id},{feePaid: true});
+}
+
+
+const updateFeeAmountPaid = async function(data){
+    const student = await StudentSchema.findOne({_id: data.studentId});
+    if(student.feeAmount)
+        await StudentSchema.findOneAndUpdate({_id: data.studentId},{feeAmount: student.feeAmount+data.amount})
+    else
+        await StudentSchema.findOneAndUpdate({_id: data.studentId},{feeAmount: data.amount})
+}
+
+const addImage = async function(data){
+    await StudentSchema.findOneAndUpdate({_id:data.studentId},{profileImg: data.image_url});
+    return true;
+}
 // const getStudentbyEmail
 
 // const getStudentbyRecoveryEmail
 
 // const getStudentby
 
-module.exports = {verifyStudent, isVerifiedStudentId, isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId, isValidStudentId}
+module.exports = {addImage, changeFeePaidstatus, updateFeeAmountPaid, getStudentIdbyEmail, verifyStudent, isVerifiedStudentId, isValidStudentEmail, isValidStudentRegNo, createStudent, isValidStudentRecoveryEmail, isValidStudent, getStudentbyId, isValidStudentId}

@@ -12,7 +12,7 @@ const complaintSlice = createSlice({
   initialState,
   reducers: {
     add_complaint: (state, action) => {
-      state.complaints.push(action.payload);
+      state.complaints = action.payload;
       console.log(state.complaints.complaints);
       if (action.payload.studentName === state.myComplaints) {
         state.myComplaints.push(action.payload);
@@ -38,10 +38,11 @@ const complaintSlice = createSlice({
     },
     get_comments: (state,action) => {
       console.log("getting comments");
-    }
+    },
+    
   },
 });
 
-export const { add_complaint, get_all_complaints, get_my_complaints, delete_complaint,add_comment,get_comments } = complaintSlice.actions;
+export const { add_complaint, get_all_complaints, get_my_complaints, delete_complaint,add_comment,get_comments,update_vote_counts } = complaintSlice.actions;
 
 export default complaintSlice.reducer;

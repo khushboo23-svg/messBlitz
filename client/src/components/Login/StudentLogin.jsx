@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { redirect_to_dashboard, logout } from '../../redux/studentSlice';
+import { redirect_to_dashboard, logoutStudent, change_fee } from '../../redux/studentSlice';
 import { get_all_complaints, get_my_complaints } from '../../redux/complaintSlice';
 import Footer from '../Footer';
 
@@ -13,9 +13,9 @@ const StudentLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.students.token !== null);
-  useSelector((state)=>{
+  useSelector((state) => {
     console.log(state);
-  })
+  });
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,42 +23,74 @@ const StudentLogin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:5500/loginStudent', {
-      email,
-      password,
-    })
+    axios
+      .post(`${process.env.REACT_APP_BACK_END_URL}/loginStudent`, {
+        email,
+        password,
+      })
       .then((res) => {
+        if (res.data.status === 301) {
+          axios
+            .post(`${process.env.REACT_APP_BACK_END_URL}/student/verify`, {
+              email,
+            })
+            .then((res) => {
+              toast.error('Check your email to verify your account');
+            });
+          return;
+        }
         const token = res.data.data.token;
-        // console.log("Token is : "+token);
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `${token}`;
-        
-        
 
-
-        // Fetch student data after successful login
-        axios.get('http://localhost:5500/student/dashboard')
+        axios
+          .get(`${process.env.REACT_APP_BACK_END_URL}/student/dashboard`)
           .then((response) => {
-            // console.log(response.data.data.complaints);
-            // console.log(response.data.data.myComplaints);
-            if(response.data.status===200){
+            if (response.data.status === 200) {
               const studentData = response.data.data;
-              dispatch(redirect_to_dashboard({
-                name : studentData.name,
-                email: studentData.email,
-                regNo: studentData.regNo,
-                hostelName: studentData.hostelName,
-                roomNo: studentData.roomNo,
-                token: studentData.token 
-              }));
-              dispatch(get_all_complaints({
-                complaints : studentData.complaints
-              }))
-              dispatch(get_my_complaints({
-                myComplaints : studentData.myComplaints
-              }))
-              navigate('/dashboard')
-            }else toast.error('Cant log in!');
+              dispatch(
+                redirect_to_dashboard({
+                  name: studentData.name,
+                  email: studentData.email,
+                  feeAmount: studentData.feeAmount,
+                  regNo: studentData.regNo,
+                  hostelName: studentData.hostelName,
+                  roomNo: studentData.roomNo,
+                  token: studentData.token,
+                })
+              );
+              dispatch(
+                get_all_complaints({
+                  complaints: studentData.complaints,
+                })
+              );
+              dispatch(
+                get_my_complaints({
+                  myComplaints: studentData.myComplaints,
+                })
+              );
+
+              axios
+                .get(`${process.env.REACT_APP_BACK_END_URL}/student/hostelExpensePerPerson`)
+                .then((response) => {
+                  const receivedAmount = response.data.data.expense;
+                  const numericAmount = Number(receivedAmount);
+                  if (!isNaN(numericAmount)) {
+                    const Amount = 25000 - numericAmount;
+                    dispatch(
+                      change_fee({
+                        Amount: Amount,
+                      })
+                    );
+                    navigate('/dashboard');
+                  } else {
+                    console.error('Received data is not convertible to number.');
+                  }
+                })
+                .catch((error) => {
+                  console.error('Error fetching bill data:', error);
+                });
+            } else toast.error('Can\'t log in!');
           })
           .catch((error) => {
             console.error('Error fetching student data:', error);
@@ -66,11 +98,7 @@ const StudentLogin = () => {
           });
       })
       .catch((err) => {
-        if (
-          err.response &&
-          err.response.data &&
-          err.response.data.message === 'password mismatch'
-        ) {
+        if (err.response && err.response.data && err.response.data.message === 'password mismatch') {
           toast.error('Password mismatch. Please check your credentials and try again.');
         } else {
           toast.error('Login failed. Wrong credentials!');
@@ -78,59 +106,58 @@ const StudentLogin = () => {
       });
   };
 
-  // Handle logout
   const handleLogout = () => {
     axios.defaults.headers.common['Authorization'] = undefined;
-    console.log("Logging out");
-    dispatch(logout());
-
+    dispatch(logoutStudent());
     localStorage.removeItem('token');
-    console.log(localStorage.getItem('token'));
     navigate('/');
   };
 
   return (
-    <>
+    <Container>
       <FormContainer>
-        
-          <form onSubmit={handleLogin}>
-            <div className="brand">
-              <h3 style={{color : "skyblue"}}>STUDENT LOGIN</h3>
-            </div>
-            <input
-              type="text"
-              placeholder="Email"
-              name="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-            <span>
-              Don't have an account? <Link to="/register">Register</Link>
-            </span>
-          </form>
-       
+        <form onSubmit={handleLogin}>
+          <div className="brand">
+            <h3 style={{ color: 'skyblue' }}>STUDENT LOGIN</h3>
+          </div>
+          <input
+            type="text"
+            placeholder="Email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Login</button>
+          <span>
+            Don't have an account? <Link to="/register">Register</Link>
+          </span>
+        </form>
       </FormContainer>
-      <Footer/>
+      <Footer />
       <ToastContainer />
-    </>
+    </Container>
   );
 };
 
-const FormContainer = styled.div`
-  height: 100vh;
-  width: 100%;
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  min-height: 100vh; /* Ensure the container spans at least the full viewport height */
+`;
+
+const FormContainer = styled.div`
+  flex: 1; /* Take remaining vertical space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   background-color: #001f3f;
-  overflow-x: hidden;
+  overflow: hidden;
   .brand {
     display: flex;
     align-items: center;
@@ -142,23 +169,26 @@ const FormContainer = styled.div`
     }
   }
   form {
-    width: 37%;
-    height: 65%;
-    margin-top: 6rem;
+    width: 45%;
+    height: 100%;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     background-color: #00000076;
     border-radius: 2rem;
     padding: 2rem 7rem;
-    input {
+    padding-bottom: 5rem;
+    input,
+    select {
       background-color: transparent;
       padding: 1rem;
       border: 0.1rem solid skyblue;
       border-radius: 0.5rem;
       color: white;
       width: 100%;
-      font-size: 100%;
+      font-size: 90%;
       &:focus {
         border: 0.1rem solid blue;
         outline: none;
@@ -167,7 +197,6 @@ const FormContainer = styled.div`
     button {
       background-color: #997af0;
       color: white;
-      margin-top: 1rem;
       padding: 0.3rem;
       border: none;
       font-weight: bold;
@@ -190,6 +219,24 @@ const FormContainer = styled.div`
         font-weight: bold;
       }
       word-spacing: 2px;
+    }
+    @media (max-width: 1054px) {
+      width: 60%;
+      padding: 2rem 2rem;
+    }
+    @media (max-width: 768px) {
+      width: 90%;
+      padding: 2rem 2rem;
+    }
+    @media (max-width: 480px) {
+      width: 100%;
+      padding: 1rem 1rem;
+      font-size: 90%;
+    }
+    @media (max-width: 480px) {
+      width: 84%;
+      padding: 1rem 1rem;
+      font-size: 90%;
     }
   }
 `;

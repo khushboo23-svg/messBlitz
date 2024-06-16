@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {  useDispatch, useSelector } from 'react-redux';
-import { logout } from '../redux/studentSlice';
-// import { logout } from '../redux/chiefWardenSlice';
+import { logoutStudent } from '../redux/studentSlice';
+import { logoutWarden } from '../redux/wardenSlice';
 import axios from 'axios';
+import '../css/dashboard.css'
 
 
 
@@ -12,6 +13,8 @@ import axios from 'axios';
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   useSelector((state)=>{
     console.log(state);
@@ -20,28 +23,25 @@ const Navbar = () => {
   const wToken = useSelector((state)=> state.wardens);
   console.log(wToken);
   const isAuthenticatedStudent = useSelector((state) => state.students.token !== null);
-  const isAuthenticatedChiefWarden = useSelector((state) => state.chiefwardens.token !== null);
   const isAuthenticatedWarden = useSelector((state) => state.wardens.token !== null);
-  const location = useLocation();
 
   const handleLogout = () => {
-    // Dispatch the logout action to reset user-related information
-    console.log("Before logging out : "+localStorage.getItem('token'));
     axios.defaults.headers.common['Authorization'] = undefined;
     localStorage.removeItem('token');
-    axios.post('http://localhost:5500/logout')
-    .then((res)=>{
-      console.log(res);
-      dispatch(logout());
-      // Redirect to the home page or login page
+    axios.post(`${process.env.REACT_APP_BACK_END_URL}/logout`)
+    .then((res) => {
       console.log("Logged out successfully");
-      console.log("After logging out : "+localStorage.getItem('token'));
+      if (isAuthenticatedStudent) {
+        dispatch(logoutStudent());
+      }
+      if (isAuthenticatedWarden) {
+        dispatch(logoutWarden());
+      }
       navigate('/');
     })
-    .catch((err)=>{
-      console.log(err);
-    })
-    
+    .catch((err) => {
+      console.error("Error logging out:", err);
+    });
   };
 
   const [isHovered, setIsHovered] = React.useState(null);
@@ -60,16 +60,21 @@ const Navbar = () => {
         <nav style={navbarStyle} className="text-light">
           <div className="logo">
             <h2>
-              <span>MESS</span>
-              <span style={{ backgroundColor: 'skyblue', color: 'black', borderRadius: '8px', marginLeft: '4px' }}>BLITZ</span>
+              <span>Mess</span>
+              <span style={{ backgroundColor: 'skyblue', color: 'black', borderRadius: '8px', marginLeft: '4px' }}>Blitz</span>
             </h2>
           </div>
-          <div className="nav-links p-2 text-light">
-            {((location.pathname === '/dashboard' && isAuthenticatedStudent) || (location.pathname ==='/admindashboard' && isAuthenticatedChiefWarden) || (location.pathname==='/warden') && isAuthenticatedWarden) ? (
+          <div className="nav-links p-2 text-light nav_changes">
+            {((location.pathname === '/dashboard' && isAuthenticatedStudent) || (location.pathname==='/warden') && isAuthenticatedWarden) ? (
               // If on the dashboard, show Logout tab
+              <>
               <button className="text-light" style={logoutStyle} onClick={handleLogout}>
                 Logout
               </button>
+              {/* <button className="text-light" style={logoutStyle} onClick={openModal}>
+              Feedback
+            </button> */}
+            </>
             ) : (
               // If not authenticated or not on the dashboard, show Home, Register, and Login tabs
               <>
@@ -83,7 +88,7 @@ const Navbar = () => {
                   Register
                 </Link> */}
 
-                <Link
+                <Link  className='link-name'
         to="/"
         style={{
           ...linkStyle,
@@ -105,7 +110,7 @@ const Navbar = () => {
       >
         Contributors
       </Link>
-      <Link
+      {/* <Link
         to="/register"
         style={{
           ...linkStyle,
@@ -115,7 +120,7 @@ const Navbar = () => {
         onMouseLeave={handleMouseLeave}
       >
         Register
-      </Link>
+      </Link> */}
                 
                 <select
                   style={selectStyle}

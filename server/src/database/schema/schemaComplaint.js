@@ -36,8 +36,10 @@ const complaintSchema = new mongoose.Schema({
                 required: true
             },
             writtenBy: {
-                type: mongoose.Types.ObjectId,
-                ref: 'studentSchema'
+                // type: mongoose.Types.ObjectId,
+                type:String,
+                // ref: 'studentSchema'
+                required:true,
             },
             likedBy: [{
                 type: mongoose.Types.ObjectId,

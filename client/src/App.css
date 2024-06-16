@@ -1,3 +1,23 @@
 *{
   background-color: '#282c34';
 }
+
+@media (max-width : 780px) {
+  .reg_form{
+    width: 77%;
+  height: 100%;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #00000076;
+  border-radius: 2rem;
+  }
+}
+
+@media (max-width : 1227px) {
+  .concontributor_container{
+    width:100vw;
+  }
+}

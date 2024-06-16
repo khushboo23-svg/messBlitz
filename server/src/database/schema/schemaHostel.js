@@ -15,6 +15,10 @@ const hostelSchema = new mongoose.Schema({
     warden:{
         type: String,
         required: true
+    },
+    expense:{
+        type: Number,
+        // required: true
     }
 
 },{timestamps: true})

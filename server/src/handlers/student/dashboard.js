@@ -25,10 +25,11 @@ const studentDashboard = async function(req,res,next){
 }
 
 const addComplaint = async function(req,res){
-    const {title,description,proofImg} = req.body;
+    let {title,description,image_url} = req.body;
+    // console.log(req.body);
     let student = await getStudentbyId(req.sid);
     if(student){
-        res.send(await createComplaint({title: title, description: description, proofImg: proofImg, hostelName: student.hostelName, _id: req.sid}))
+        res.send(await createComplaint({title: title, description: description, proofImg: image_url, hostelName: student.hostelName, _id: req.sid}))
     }
     else
         res.send({status:400, message: "student doesnt exist"});
@@ -57,40 +58,52 @@ const deleteComplaint = async function(req, res){
             res.send(await deleteComplaintbyId(complaintId));
         }
         else{
-            res.send({status: 400, data: "complaint is not raised by the user"})
+            res.send({status: 400, message: "complaint is not raised by the user"})
         }
     }
     else{
-        res.send({status: 400, data: "complaint doesnt seem to exist"})
+        res.send({status: 400, message: "complaint doesnt seem to exist"})
     }
 }
 
 const addComment = async function(req, res){
-    const {comment, complaintId} = req.body;
-    let complaint = await getComplaintById(complaintId);
-    let student = await getStudentbyId(req.sid);
-    if(student && complaint &&student.hostelName === complaint.hostelName){
-        res.send(await addCommentInComplaint({comment, complaintId, writtenBy: req.sid}));
+    try{
+        const {comment, complaintId} = req.body;
+        let complaint = await getComplaintById(complaintId);
+        let student = await getStudentbyId(req.sid);
+        if(student && complaint &&student.hostelName === complaint.hostelName){
+            res.send(await addCommentInComplaint({comment, complaintId, writtenBy: student.name}));
+        }
+        else{
+            res.send({status: 400, message: "complaint doesnt exist"});
+        }
     }
-    else{
-        res.send({status: 400, message: "complaint doesnt exist"});
+    catch(err){
+        console.log("error in add comment: "+err);
+        res.send({status: 400, message: "Error"+err});
     }
 }
 
 const deleteComment = async function(req, res){
-    const {commentId, complaintId} = req.query;
-    const comment = await getCommentById({complaintId, commentId});
-    if(comment&&comment.writtenBy==req.sid){
-        res.send(await deleteCommentById({complaintId, commentId}));
+    try{
+        const {commentId, complaintId} = req.query;
+        const comment = await getCommentById({complaintId, commentId});
+        if(comment&&comment.writtenBy==req.sid){
+            res.send(await deleteCommentById({complaintId, commentId}));
+        }
+        else{
+            res.send({status: 400, message: "you are not authorized to do this"})
+        }
     }
-    else{
-        res.send({status: 400, message: "you are not authorized to do this"})
+    catch(err){
+        console.log("error in delete comment: "+err);
+        res.send({status: 400, message: "Error"+err});
     }
 }
 
 const toggleLike = async function(req, res){
     const {commentId, complaintId} = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const comment = await getCommentById({complaintId, commentId});
     if(comment){
         let response =await toggleLikeInComment({complaintId, commentId, _id: req.sid})
@@ -113,8 +126,9 @@ const upvote = async function(req, res){
     if(complaint){
         try{
             if(await isUpvoted({_id: req.sid, complaintId})){
-                await removeUpvote({_id: req.sid, complaintId});
-                res.send({status: 200, data: {message: "removed upvote successfully"}})
+                // await removeUpvote({_id: req.sid, complaintId});
+                // res.send({status: 200, data: {message: "removed upvote successfully"}})
+                res.send({status: 200, data: {message: "Already upvoted"}})
             }
             else if(await isDownvoted({_id: req.sid, complaintId})){
                 await removeDownvote({_id: req.sid, complaintId});
@@ -123,6 +137,7 @@ const upvote = async function(req, res){
             }
             else{
                 await addUpvote({_id: req.sid, complaintId});
+                // console.log(req.sid);
                 res.send({status: 200, data: {message: "upvoted successfully"}})
             }
         }
@@ -141,8 +156,9 @@ const downvote = async function(req, res){
     if(complaint){
         try{
             if(await isDownvoted({_id: req.sid, complaintId})){
-                await removeDownvote({_id: req.sid, complaintId});
-                res.send({status: 200, data: {message: "removed downvote successfully"}})
+                // await removeDownvote({_id: req.sid, complaintId});
+                // res.send({status: 200, data: {message: "removed downvote successfully"}})
+                res.send({status: 200, data: {message: "Already downvoted"}});
             }
             else if(await isUpvoted({_id: req.sid, complaintId})){
                 await removeUpvote({_id: req.sid, complaintId});

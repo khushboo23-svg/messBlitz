@@ -46,11 +46,22 @@ const createWarden = async function(data){
     }).catch((err)=>{
         response = {status: 400, message:"some kind of error"+err};
     })
-    console.log(response)
+    // console.log(response)
     return response;
 }
 const getWardenById = async function(_id){
-    return await WardenSchema.findById(_id);
+    let warden = await WardenSchema.findById(_id);
+    if(warden){ 
+        return {
+            name: warden.name,
+            email: warden.email,
+            hostelName: warden.hostelName,
+            profileImg: warden.profileImg
+        };
+    }
+    else{
+        return null;
+    }
 }
 
 const getAllUnassginedWarden = async function(){
@@ -70,4 +81,9 @@ const addHostelToWarden = async function(data){
     await warden.save();
 }
 
-module.exports = {getAllUnassginedWarden, addHostelToWarden, isValidWardenId, isValidWarden, createWarden, isValidWardenEmail, isValidWardenRecoveryEmail, getWardenById, getWardenByEmail, isValidWarden}
+const addImage = async function(data){
+    await WardenSchema.findOneAndUpdate({_id:data.wardenId},{profileImg: data.image_url});
+    return true;
+}
+
+module.exports = {addImage,getAllUnassginedWarden, addHostelToWarden, isValidWardenId, isValidWarden, createWarden, isValidWardenEmail, isValidWardenRecoveryEmail, getWardenById, getWardenByEmail, isValidWarden}
