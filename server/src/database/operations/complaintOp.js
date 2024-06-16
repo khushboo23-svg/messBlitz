@@ -1,6 +1,5 @@
-const express = require("express")
-const ComplaintSchema = require("../schema/schemaComplaint")
-
+const ComplaintSchema = require("../schema/schemaComplaint");
+const StudentSchema = require("../schema/schemaStudent");
 const getAllComplaints = async function(){
     return await ComplaintSchema.find({});
 }
@@ -10,6 +9,7 @@ const getComplaintsByStudentId = async function(_id){
 }
 
 const getComplaintsByHostelName = async function(hostelName){
+    // console.log(hostelName)
     return await ComplaintSchema.find({hostelName: hostelName});
 }
 
@@ -21,7 +21,7 @@ const getCommentById = async function(data){
     let complaint = await ComplaintSchema.findById(data.complaintId);
     if(complaint){
         let existingComment = complaint.comments.filter(doc=>data.commentId==doc._id);
-        console.log(existingComment)
+        // console.log(existingComment)
         if(existingComment.lenth!=0){
             return existingComment[0];
         }
@@ -35,6 +35,7 @@ const getCommentById = async function(data){
 }
 
 const createComplaint = async function(data){
+    console.log(data.proofImg);
     const complaint = new ComplaintSchema({
         title: data.title,
         description: data.description,
@@ -48,7 +49,7 @@ const createComplaint = async function(data){
     // console.log(complaint)
     let response;
     await complaint.save().then((doc)=>{
-        console.log(doc)
+        // console.log(doc)
         response =  {status:200, data:doc}
     }).catch((err)=>{
         response =  {status:400, error: "error creating complaint: "+err}
@@ -66,6 +67,7 @@ const deleteComplaintbyId = async function(_id){
     }).catch((err)=>{
         response = {status: 400, message: err};
     })
+    // console.log(response)
     return response;
 }
 
@@ -195,10 +197,20 @@ const removeUpvote = async function(data){
 const removeDownvote = async function(data){
     const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
     if(complaint){
-        let newDownvoteId = complaint.upvoteId.filter(id=>id!=data._id);
+        let newDownvoteId = complaint.downvoteId.filter(id=>id!=data._id);
         complaint.downvoteId = newDownvoteId;
         await complaint.save();
     }
 }
 
-module.exports = {isDownvoted, isUpvoted, addDownvote, addUpvote, removeUpvote, removeDownvote, getAllComplaintsWithStatusByHostelName, getAllComplaints, toggleLikeInComment, getComplaintsByHostelName, getCommentById, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}
+const totalUpvotes = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
+    return complaint.upvoteId.length;
+}
+
+const totalDownvotes = async function(data){
+    const complaint = await ComplaintSchema.findOne({_id: data.complaintId});
+    return complaint.downvoteId.length;
+}
+
+module.exports = {totalUpvotes, totalDownvotes, isDownvoted, isUpvoted, addDownvote, addUpvote, removeUpvote, removeDownvote, getAllComplaintsWithStatusByHostelName, getAllComplaints, toggleLikeInComment, getComplaintsByHostelName, getCommentById, getComplaintsByStudentId, createComplaint, getComplaintById,deleteComplaintbyId, addCommentInComplaint, deleteCommentById}

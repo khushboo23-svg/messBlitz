@@ -28,7 +28,7 @@ function ChiefWardenLogin() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:5500/loginChiefWarden', {
+    axios.post(`${process.env.REACT_APP_BACK_END_URL}/loginChiefWarden`, {
       email,
       password,
     })
@@ -41,7 +41,7 @@ function ChiefWardenLogin() {
         axios.defaults.headers.common['authorization'] = `${token}`;
 
 
-        axios.get("http://localhost:5500/chiefWarden/dashboard")
+        axios.get(`${process.env.REACT_APP_BACK_END_URL}/chiefWarden/dashboard`)
         .then((response)=> {
           console.log(response.data);
           if(response.data.status===200){

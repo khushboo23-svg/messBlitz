@@ -27,7 +27,7 @@ const Footer = () => {
       <footer style={footerStyle}>
         <div>
           {/* <p>About Us | Services | Contact</p> */}
-          <p>Address: 123 Street Name, City, Country</p>
+          {/* <p>Address: 123 Street Name, City, Country</p> */}
           <p>Email: contact@messblitz.com</p>
         </div>
         <p style={copyrightStyle}>&copy; {new Date().getFullYear()} MessBlitz. All Rights Reserved.</p>

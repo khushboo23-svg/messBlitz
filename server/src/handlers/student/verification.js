@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { getStudentbyId, verifyStudent } = require('../../database/operations/studentOp');
+const { getStudentbyId, getStudentIdbyEmail, verifyStudent } = require('../../database/operations/studentOp');
 const VerifierSchema = require('../../database/schema/verifierSchema');
 const { response } = require('express');
 
@@ -14,7 +14,7 @@ const config = {
     }
 }
 
-const verify = async function(req, res){
+const verifyy = async function(req, res){
     try{
         const transporter = nodemailer.createTransport(config);
         transporter.verify(function(error, success) {
@@ -24,6 +24,7 @@ const verify = async function(req, res){
               console.log('Server is ready to take our messages');
             }
           });
+        req.sid = await getStudentIdbyEmail(req.body.email);
         const student = await getStudentbyId(req.sid);
         let data = {};
         data.from = "miku006900@gmail.com";
@@ -42,16 +43,18 @@ const verify = async function(req, res){
             })
             await newStudentVerifier.save()
         }
-        const url = `http://localhost:5500/verifyLink?id=${req.sid}&OTP=${OTP}`;
-        data.html = `<p>Please use this verification link to verify your account.${url}</p>`
-        console.log(data.html)
+        const url = process.env.BACK_END_URL+`/verifyLink?id=${req.sid}&OTP=${OTP}`;
+        data.html = `<p><h4>Hello,</h4>
+        <p>Thank you for registering. Please verify your email by clicking on the link below:</p>
+        <a href="${url}">Verify Email</a></p>`
+        // console.log(data.html)
         // data.text = "hello this is a verification email"
-        console.log(data);
+        // console.log(data);
         transporter.sendMail(data, (err,info)=>{
             if(err)
                 console.log(err)
-            else
-                console.log(info)
+            // else
+            //     console.log(info)
         })
         res.send({status: 200, data:{message: "email sent"}})
     }
@@ -75,7 +78,7 @@ const verifyLink = async function(req, res){
       <title>Verification</title>
     </head>
     <body>
-      <h1>You have been verified!</h1>
+      <h1>You have been verified! Try to log in again!!</h1>
     </body>
     </html>
   `;
@@ -90,7 +93,7 @@ const verifyLink = async function(req, res){
       <title>Verification</title>
     </head>
     <body>
-      <h1>Link expired!</h1>
+      <h1>Link expired!!!</h1>
     </body>
     </html>
   `;
@@ -105,7 +108,7 @@ const verifyLink = async function(req, res){
       <title>Verification</title>
     </head>
     <body>
-      <h1>Invalid link</h1>
+      <h1>Invalid link!!</h1>
     </body>
     </html>
   `;
@@ -113,4 +116,4 @@ const verifyLink = async function(req, res){
     }
 }
 
-module.exports = {verify, verifyLink}
+module.exports = {verifyy, verifyLink}

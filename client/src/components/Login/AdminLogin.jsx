@@ -45,10 +45,10 @@ function AdminLogin() {
     switch (selectedTab) {
       case "Warden":
         return <WardenLogin values={values} handlechange={handlechange} handleSubmit={handleSubmit} />;
-      case "ChiefWarden":
-        return <ChiefWardenLogin values={values} handlechange={handlechange} handleSubmit={handleSubmit} />;
-      case "Accountant":
-        return <AccountantLogin values={values} handlechange={handlechange} handleSubmit={handleSubmit} />;
+      // case "ChiefWarden":
+      //   return <ChiefWardenLogin values={values} handlechange={handlechange} handleSubmit={handleSubmit} />;
+      // case "Accountant":
+      //   return <AccountantLogin values={values} handlechange={handlechange} handleSubmit={handleSubmit} />;
       default:
         return null;
     }
@@ -56,11 +56,11 @@ function AdminLogin() {
 
   return (
     <>
-      <TabsContainer>
-        <Tab onClick={() => setSelectedTab("Warden")}>Warden Login</Tab>
-        <Tab onClick={() => setSelectedTab("ChiefWarden")}>Chief Warden Login</Tab>
-        <Tab onClick={() => setSelectedTab("Accountant")}>Accountant Login</Tab>
-      </TabsContainer>
+      {/* <TabsContainer> */}
+        {/* <Tab onClick={() => setSelectedTab("Warden")}>Warden Login</Tab> */}
+        {/* <Tab onClick={() => setSelectedTab("ChiefWarden")}>Chief Warden Login</Tab>
+        <Tab onClick={() => setSelectedTab("Accountant")}>Accountant Login</Tab> */}
+      {/* </TabsContainer> */}
 
       {renderSelectedTab()}
 

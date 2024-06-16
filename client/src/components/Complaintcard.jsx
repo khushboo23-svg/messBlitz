@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add_comment, delete_complaint } from "../redux/complaintSlice";
 import axios from "axios";
 import styled, { keyframes } from 'styled-components';
 import "../css/Complaintcard.css";
+
 
 
 
@@ -18,9 +19,10 @@ const CardContainer = styled.div`
   /* Adjust the duration as needed */
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: ${props => props.solved ? 'rgba(0, 128, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
   }
 `;
+
 
 const Complaintcard = ({ complaint, showMyComplaints }) => {
   const [upCount, setUpCount] = useState(0);
@@ -30,16 +32,22 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
   const [comments, setComments] = useState([]);
   const [showCommentsOnCard, setShowCommentsOnCard] = useState(false); 
   const [studentName, setStudentName] = useState("");
+  const [solved,setSolved] = useState(false);
   const dispatch = useDispatch();
+  const studentDetails_name = useSelector( state => state.students.name);
+  const wardenData = useSelector( state => state.wardens.name);
 
-  console.log(complaint.comments);
+  // console.log("complaint card",complaint,showMyComplaints);
+
 
   useEffect(() => {
     const fetchStudentName = async () => {
+      // console.log("hi from inside")
       try {
         const response = await axios.get(
-          `http://localhost:5500/student/getStudent/${complaint.studentId}`
+          `${process.env.REACT_APP_BACK_END_URL}/student/getStudent/${complaint.studentId}`
         );
+        // console.log("student details",response);
         setStudentName(response.data.studentName);
       } catch (error) {
         console.error("Error fetching student name:", error);
@@ -49,17 +57,23 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
     fetchStudentName();
   }, [complaint.studentId]);
 
-  const handleUpClick = () => {
-    setUpCount(upCount + 1);
-  };
-
-  const handleDownClick = () => {
-    setDownCount(downCount + 1);
-  };
 
   const openComment = () => {
     setShowCommentsOnCard((prev) => !prev);
   };
+
+  const handleSolved = (e) => {
+    e.preventDefault();
+    axios
+      .post(`${process.env.REACT_APP_BACK_END_URL}/warden/resolveComplaint`, {complaintId: complaint._id})
+      .then((res) => {
+        console.log("solved response",res);
+      })
+      .catch((err) => {
+        console.log("Can't solve:", err);
+      });
+    setSolved(true);
+  }
 
   const handleDelete = () => {
     const confirmDelete = window.confirm(
@@ -70,7 +84,7 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
       dispatch(delete_complaint(complaint._id));
 
       axios
-        .delete(`http://localhost:5500/student/deleteComplaint/${complaint._id}`)
+        .delete(`${process.env.REACT_APP_BACK_END_URL}/student/deleteComplaint/${complaint._id}`)
         .then(() => {
           console.log("complaint deleted");
         })
@@ -90,12 +104,13 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
 
   const handleAddComment = () => {
     axios
-      .post("http://localhost:5500/student/addComment", {
+      .post(`${process.env.REACT_APP_BACK_END_URL}/student/addComment`, {
         complaintId: complaint._id,
         comment: newComment,
-        writtenBy: "", // Replace with the actual user identifier
+        writtenBy: studentName,
       })
       .then((res) => {
+        console.log("inside comment",res);
         dispatch(add_comment(res.data.data.comments));
         console.log("Comment added");
       })
@@ -105,6 +120,27 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
     closeCommentPopup();
   };
 
+  const handleUpClick = async () => {
+    try {
+        const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/student/upvote`, {
+          complaintId: complaint._id
+        });
+        console.log('Upvote Response:', response.data);
+    } catch (error) {
+        console.error('Error in upvoting:', error);
+    }
+}
+
+const handleDownClick = async () => {
+    try {
+        const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/student/downvote`, {
+          complaintId: complaint._id
+        });
+        console.log('Downvote Response:', response.data);
+    } catch (error) {
+        console.error('Error in downvoting:', error);
+    }
+  }
   const formattedDate = new Date(complaint.updatedAt).toLocaleDateString(
     "en-GB",
     {
@@ -125,49 +161,62 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
 
   return (
     <div className="card-component shadow-lg">
-      <CardContainer className="card container">
+      <CardContainer className="card container card_part">
         <div className="card-body">
-          <div className="title-date-vote-user">
+          <div className="card-title-txt">
             <h3 className="card-title">{complaint.title}</h3>
-            <p
+            <span
               style={{
                 borderRadius: "5px",
-                backgroundColor: "black",
                 color: "white",
+                padding:"2px",
+                fontSize:'small',
+                display:'flex',
+                justifyContent:'flex-end'
               }}
-              className="shadow-lg"
             >
               {formattedDate} | {formattedTime}
-            </p>
+            </span>
           </div>
           <hr />
           <div className="description">
             <p className="card-text fs-6 fw-light">{complaint.description}</p>
           </div>
         </div>
-        <div className="title-date-vote-user  row">
-          <div className="votebtn col-3 mt-2 ">
+        <div className="com-card">
+          <div className="votebtn">
             <h4>
               <i
                 className="fa-solid fa-circle-up"
                 onClick={handleUpClick}
               ></i>{" "}
-              {upCount}
+              {complaint.upvoteId.length}
             </h4>
             <h4>
               <i
                 className="fa-solid fa-circle-down"
                 onClick={handleDownClick}
               ></i>{" "}
-              {downCount}
+              {complaint.downvoteId.length}
             </h4>
           </div>
-          <div className="col-md-4 offset-4 ">
+          <div className="">
             <p className="text-light" style={{ fontSize: "15px" }}>
               By : {complaint.studentName}
               <br />
               <i className="text-primary">[Reg No.: {complaint.studentRegNo}]</i>
             </p>
+            {wardenData && (
+              <Button
+                style={{backgroundColor: 'green', color: 'white'}}
+                size="sm"
+                onClick={handleSolved}
+                className="shadow-lg"
+                disabled={solved}
+              >
+                solved
+              </Button>
+            )}
             {showMyComplaints && (
               <Button
                 variant="danger"
@@ -175,11 +224,12 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
                 onClick={handleDelete}
                 className="shadow-lg"
               >
-                Delete this complaint
+                Delete
               </Button>
             )}
           </div>
         </div>
+        <a href={complaint.proofImg} target="_blank" style={{display:'flex',justifyContent:'center',alignItems:'center'}}><p style={{color:'white'}}>view image</p></a>
         <div className="comment text-decoration-none text-lowercase">
           <Button
             variant="link"
@@ -188,13 +238,15 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
           >
             {showCommentsOnCard ? "Hide comments" : "View all comments"}
           </Button>
-          <Button
-            variant="link"
-            className="text-decoration-none text-lowercase fs-6"
-            onClick={openCommentPopup}
-          >
-            Add a comment
-          </Button>
+          {!wardenData && (
+              <Button
+              variant="link"
+              className="text-decoration-none text-lowercase fs-6"
+              onClick={openCommentPopup}
+            >
+              Add comment
+            </Button>
+            )}
           {showCommentsOnCard && (
             <div className="comments">
               <hr />
@@ -214,7 +266,7 @@ const Complaintcard = ({ complaint, showMyComplaints }) => {
       </CardContainer>
 
       <Modal show={showCommentPopup} onHide={closeCommentPopup}>
-        <Modal.Header closeButton style={{ backgroundColor: '#3498db', color: 'white' }}>
+        <Modal.Header closeButton style={{backgroundColor:'rgb(30, 6, 97)',color:'white'}}>
           <Modal.Title style={{ textAlign: 'center', fontSize: '20px' }}>Add a comment</Modal.Title>
         </Modal.Header>
         <Modal.Body>

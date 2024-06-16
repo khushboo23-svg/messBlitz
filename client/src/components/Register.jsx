@@ -27,7 +27,9 @@ function Register() {
 
   useEffect(() => {
     // Fetch hostel options from the API
-    axios.get('http://localhost:5500/getAllHostels')
+    console.log("GET HOSTEL")
+    console.log(`${process.env.REACT_APP_BACK_END_URL}/getAllHostels`)
+    axios.get(`${process.env.REACT_APP_BACK_END_URL}/getAllHostels`)
       .then(response => {
         console.log(response.data.data.hostels);
         setHostelOptions(response.data.data.hostels);
@@ -66,7 +68,7 @@ function Register() {
       return;
     }
 
-    axios.post('http://localhost:5500/registerStudent', {
+    axios.post(`${process.env.REACT_APP_BACK_END_URL}/registerStudent`, {
       name,
       regNo,
       hostelName,
@@ -98,7 +100,7 @@ function Register() {
   return (
     <>
       <FormContainer>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="reg_form">
           <div className="brand">
             <h3 style={{color : "white"}}>STUDENT REGISTER</h3>
           </div>
@@ -170,7 +172,7 @@ function Register() {
 }
 
 const FormContainer = styled.div`
-  height: 110%;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -189,8 +191,8 @@ const FormContainer = styled.div`
     }
   }
   form {
-    width: 45%;
-    height: 100%;
+    width: 45%;  // Default width suitable for larger screens
+    height: auto;  // Changed to auto for better responsiveness
     margin-top: 4rem;
     margin-bottom: 4rem;
     display: flex;
@@ -200,6 +202,7 @@ const FormContainer = styled.div`
     border-radius: 2rem;
     padding: 2rem 7rem;
     padding-bottom: 5rem;
+
     input,
     select {
       background-color: transparent;
@@ -240,7 +243,24 @@ const FormContainer = styled.div`
       }
       word-spacing: 2px;
     }
+
+    @media (max-width: 1054px) {
+      width: 60%;  // Use more of the screen on smaller devices
+      padding: 2rem 2rem;  // Reduce padding
+    }
+
+    @media (max-width: 768px) {
+      width: 90%;  // Use more of the screen on smaller devices
+      padding: 2rem 2rem;  // Reduce padding
+    }
+
+    @media (max-width: 480px) {
+      width: 84%;  // Use full width for very small devices
+      padding: 1rem 1rem;  // Further reduce padding
+      font-size: 90%;  // Adjust font size slightly
+    }
   }
 `;
+
 
 export default Register;

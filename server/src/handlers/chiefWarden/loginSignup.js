@@ -8,7 +8,7 @@ const registerChiefWarden = async (req,res)=>{
     else{
         let data = {name, email, password, recoveryEmail}
         const obj= await createChiefWarden(data)
-        console.log(obj)
+        // console.log(obj)
         res.send(obj);
     }
 }

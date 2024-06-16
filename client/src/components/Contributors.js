@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import githubImg from '../images/github.png';
 import linkedinImg from '../images/Linkedin.png';
+import bharat from '../images/bharat.jpg';
+import khushboo from '../images/khushboo.jpg';
 import Footer from './Footer';
 
 // Define the keyframe animation
@@ -61,7 +63,7 @@ const Contributors = () => {
               contribution="Backend Developer, Crafting Robust APIs and Data Management"
               linkedin="https://www.linkedin.com/in/bharat-adhikari-54968a1b5/"
               github="https://github.com/AdBharat14"
-              imageSrc="https://avatars.githubusercontent.com/u/70108489?v=4"
+              imageSrc={bharat}
             />
             {/* Add more Contributor components as needed */}
             <Contributor
@@ -69,14 +71,14 @@ const Contributors = () => {
               contribution="React UI Design and Redux-Managed Data Integration"
               linkedin="https://www.linkedin.com/in/khushboo-kumari-4a29021ba/"
               github="https://github.com/khushboo23-svg"
-              imageSrc="https://media.licdn.com/dms/image/C5603AQGvdAoZOYOYNA/profile-displayphoto-shrink_800_800/0/1659719898343?e=1706140800&v=beta&t=kNUlI67Fa88RYmwwVpvSJyHBAXDzUKzIgbk31mws_Tk"
+              imageSrc={khushboo}
             />
             <Contributor
               name="Puneet Chauhan"
               contribution="Designing React Components for Enhanced User Interaction"
               linkedin="https://www.linkedin.com/in/puneet-chauhan-a03a69226/"
               github="https://github.com/puneet2003"
-              imageSrc="https://media.licdn.com/dms/image/D4D03AQF-5B4MKTwRMA/profile-displayphoto-shrink_800_800/0/1697801901167?e=1706140800&v=beta&t=xLNdYreS_c6ViKFfIml5lwaKLG5Oqw1dTF3eQDcTjuY"
+              imageSrc="https://media.licdn.com/dms/image/D4D03AQF-5B4MKTwRMA/profile-displayphoto-shrink_800_800/0/1697801901167?e=1724284800&v=beta&t=SymbyCKHtpzQwvxzxBh28rSxOmOHHEmwsH_I9nNU7qM"
             />
           </div>
         </div>

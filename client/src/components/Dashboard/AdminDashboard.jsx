@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
 
   const getComplaintByHostelName  = () => {
-    axios.post("http://localhost:5500/chiefWarden/getComplaints",{hostelName : "KNGH"})
+    axios.post(`${process.env.REACT_APP_BACK_END_URL}/chiefWarden/getComplaints`,{hostelName : "KNGH"})
     .then((res)=>{
       console.log(res);
     })
@@ -95,7 +95,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch hostel options from the API
-    axios.get('localhost:5500/warden/dashboard')
+    axios.get(`${process.env.REACT_APP_BACK_END_URL}/warden/dashboard`)
       .then(response => {
         console.log(response.data);
         // setWardonOptions(response.data.wardens);
