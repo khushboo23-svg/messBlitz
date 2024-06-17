@@ -2,6 +2,35 @@
 This is a mess management web app, 
 Live Link: https://mess-blitz-front-end.vercel.app/
 
+## Features
+
+- **User Registration and Complaint Management**:
+  - Simple user registration process.
+  - Interface for raising complaints.
+  - Option to upvote or downvote complaints.
+
+- **Dashboard and Complaint Resolution**:
+  - Dashboards for students to track complaints.
+  - Dashboards for wardens to manage and resolve complaints.
+
+- **Billing and Financial Management**:
+  - View and verify expenses.
+  - Track expenses and payments.
+  - Update and manage mess bills.
+
+- **Feedback and Communication Enhancement**:
+  - System for leaving and analyzing feedback.
+  - Tools for improving communication between students and wardens.
+    
+## Tech Stack
+
+- **Frontend**: React, Redux
+- **Backend**: Node.js, Express
+- **Database**: MongoDB
+
+
+## Screenshots of the application
+
 FRONT PAGE
 
 ![Screenshot (2070)](https://github.com/khushboo23-svg/messBlitz/assets/81730811/eaa236bc-5ab8-47b0-9482-ea087de2af8c)
@@ -15,6 +44,8 @@ STUDENT DASHBOARD
 ![Screenshot (2082)](https://github.com/khushboo23-svg/messBlitz/assets/81730811/af228815-fced-4034-8b08-ae76bc1a876a)
 
 ![Screenshot (2083)](https://github.com/khushboo23-svg/messBlitz/assets/81730811/5207f6e3-1e01-477b-befd-aeb852a76780)
+
+![Screenshot (2085)](https://github.com/khushboo23-svg/messBlitz/assets/81730811/c764d718-df7d-4149-adb6-2622ee169b3d)
 
 ![Screenshot (2084)](https://github.com/khushboo23-svg/messBlitz/assets/81730811/e95817be-ffe8-4e3e-b16b-d562ff0934ff)
 
